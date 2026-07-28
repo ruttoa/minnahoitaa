@@ -15,7 +15,6 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 
 <section class="contact-band l-section l-section--dark l-section--tight">
 	<div class="l-container contact-band__inner">
-		<div class="contact-band__glow" aria-hidden="true"></div>
 		<h2>{t("contactBand.heading")}</h2>
 		<p>{t("contactBand.body")}</p>
 		<Button href={contactHref} variant="accent">{t("cta.contact")}</Button>
@@ -24,11 +23,7 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 
 <style lang="scss">
 	.contact-band {
-		position: relative;
-		overflow: hidden;
-
 		&__inner {
-			position: relative;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -38,21 +33,7 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 			margin-inline: auto;
 		}
 
-		&__glow {
-			position: absolute;
-			top: -8rem;
-			left: 50%;
-			width: 30rem;
-			height: 20rem;
-			transform: translateX(-50%);
-			background: radial-gradient(circle, var(--c-lamp-500) 0%, transparent 70%);
-			filter: blur(4rem);
-			opacity: 0.25;
-			pointer-events: none;
-		}
-
 		p {
-			position: relative;
 			color: var(--c-sage-300);
 		}
 	}

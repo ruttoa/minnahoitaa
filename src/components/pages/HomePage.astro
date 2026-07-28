@@ -35,16 +35,18 @@ const heroIntro = extractPlainText(heroEntry?.data.content);
 	<section class="l-section" aria-labelledby="services-heading">
 		<div class="l-container">
 			<h2 id="services-heading" class="home-section-heading">{t("home.servicesHeading")}</h2>
-			<div class="home-services-grid">
+			<div class="home-services-grid" data-reveal-group>
 				{
 					services.map((service) => (
-						<ServiceCard
-							locale={locale}
-							slug={service.id}
-							title={service.data.title}
-							summary={service.data.summary}
-							icon={service.data.icon}
-						/>
+						<div data-reveal>
+							<ServiceCard
+								locale={locale}
+								slug={service.id}
+								title={service.data.title}
+								summary={service.data.summary}
+								icon={service.data.icon}
+							/>
+						</div>
 					))
 				}
 			</div>
@@ -83,6 +85,7 @@ const heroIntro = extractPlainText(heroEntry?.data.content);
 	.home-services-grid {
 		display: grid;
 		gap: var(--s-6);
+		align-items: stretch;
 
 		@include respond(md) {
 			grid-template-columns: repeat(3, 1fr);

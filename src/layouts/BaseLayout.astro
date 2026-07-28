@@ -9,6 +9,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import SkipLink from "../components/SkipLink.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import ScrollReveal from "../components/ScrollReveal.astro";
 import { locales, isLocale, useTranslations, defaultLocale } from "../i18n/ui";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
@@ -106,6 +107,7 @@ const localBusinessLd = {
 		</main>
 
 		<SiteFooter locale={locale} />
+		<ScrollReveal />
 
 		<EmDashBodyEnd page={pageCtx} />
 	</body>

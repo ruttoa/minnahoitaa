@@ -1,0 +1,44 @@
+// Print stylesheet — the price list (PLAN.md §7) is the primary target,
+// but these rules apply site-wide since any page could reasonably be printed.
+@media print {
+	.site-header,
+	.site-footer,
+	.skip-link,
+	.contact-band,
+	.hero__glow,
+	.service-card__glow,
+	.service-section__glyph::before,
+	.btn {
+		display: none !important;
+	}
+
+	body {
+		background: #fff;
+		color: #000;
+	}
+
+	.l-container {
+		max-width: none;
+		padding-inline: 0;
+	}
+
+	a {
+		color: #000;
+		text-decoration: underline;
+	}
+
+	.price-table {
+		&__group {
+			break-inside: avoid;
+		}
+
+		&__row {
+			break-inside: avoid;
+			border-bottom-color: #000;
+		}
+
+		&__amount {
+			color: #000;
+		}
+	}
+}
