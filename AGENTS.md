@@ -18,7 +18,7 @@ The admin UI is at `http://localhost:4321/_emdash/admin`.
 |---|---|
 | `astro.config.mjs` | Astro config: `emdash()` integration, D1/R2, i18n block (`fi` default, `en` under `/en/`), Vite SCSS `additionalData` auto-injecting `@use "abstracts" as *;` into every component style block |
 | `src/live.config.ts` | EmDash loader registration (boilerplate — don't modify) |
-| `seed/seed.json` | Schema definition + content (collections, fields, menus). Finnish entries only so far — English via `translationOf` lands in Phase 6. `gallery_items` collection exists but is deliberately unseeded: needs the client's photo-use permission first (see `docs/media-credits.md`). |
+| `seed/seed.json` | Schema definition + full bilingual content (collections, fields, menus — fi + en via `translationOf`). `gallery_items` collection exists but has no entries yet: all 31 archived photos are uploaded to the media library (`scripts/upload-media.sh`, publish permission confirmed — see `docs/media-credits.md`) but none are attached to a `gallery_items`/`services.image` entry yet — that's a still-open content-curation step, not a permission blocker. |
 | `emdash-env.d.ts` | Generated types for collections (auto-regenerated on dev server start — don't hand-edit) |
 | `src/layouts/BaseLayout.astro` | `<html lang>`, head/meta/hreflang, skip link, `SiteHeader`, `<main id="main">`, `SiteFooter`, EmDash page-contribution slots |
 | `src/layouts/PageLayout.astro` | `BaseLayout` + page-header pattern (H1 + optional intro) |
