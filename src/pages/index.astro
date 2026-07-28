@@ -1,15 +1,105 @@
 ---
-// Placeholder for Phase 1 verification. Phase 4 replaces this with the real
-// homepage composition (hero, services, testimonials, about, CTA).
-import PageLayout from "../layouts/PageLayout.astro";
+import { getEmDashCollection, getEmDashEntry, extractPlainText } from "emdash";
+import { PortableText } from "emdash/ui";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import TestimonialStrip from "../components/TestimonialStrip.astro";
+import ContactBand from "../components/ContactBand.astro";
 import { useTranslations, isLocale, defaultLocale } from "../i18n/ui";
 
 const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
 const t = useTranslations(locale);
+
+const { entry: heroEntry, cacheHint: heroCacheHint } = await getEmDashEntry("pages", "koti-hero", { locale });
+const { entry: aboutEntry, cacheHint: aboutCacheHint } = await getEmDashEntry("pages", "minusta", { locale });
+const { entries: services, cacheHint: servicesCacheHint } = await getEmDashCollection("services", {
+	locale,
+	orderBy: { order: "asc" },
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(heroCacheHint);
+	Astro.cache.set(aboutCacheHint);
+	Astro.cache.set(servicesCacheHint);
+}
+
+const heroHeading = heroEntry?.data.title ?? "Minna hoitaa";
+const heroIntro = extractPlainText(heroEntry?.data.content);
 ---
 
-<PageLayout title="Minna hoitaa" heading="Joku on kotona" intro={t("meta.defaultDescription")}>
-	<div class="l-container">
-		<p>Phase 1 foundations placeholder — replaced in Phase 4.</p>
-	</div>
-</PageLayout>
+<BaseLayout title="Minna hoitaa" description={t("meta.defaultDescription")}>
+	<Hero locale={locale} heading={heroHeading} intro={heroIntro} />
+
+	<section class="l-section" aria-labelledby="services-heading">
+		<div class="l-container">
+			<h2 id="services-heading" class="home-section-heading">{t("home.servicesHeading")}</h2>
+			<div class="home-services-grid">
+				{
+					services.map((service) => (
+						<ServiceCard
+							locale={locale}
+							slug={service.id}
+							title={service.data.title}
+							summary={service.data.summary}
+							icon={service.data.icon}
+						/>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	{
+		aboutEntry && (
+			<section class="l-section home-about" aria-labelledby="about-heading">
+				<div class="l-container home-about__inner">
+					<h2 id="about-heading">{aboutEntry.data.title}</h2>
+					<div class="home-about__body">
+						<PortableText value={aboutEntry.data.content} />
+					</div>
+				</div>
+			</section>
+		)
+	}
+
+	<section class="l-section" aria-labelledby="testimonials-heading">
+		<div class="l-container">
+			<h2 id="testimonials-heading" class="home-section-heading">{t("home.testimonialsHeading")}</h2>
+			<TestimonialStrip locale={locale} />
+		</div>
+	</section>
+
+	<ContactBand locale={locale} />
+</BaseLayout>
+
+<style lang="scss">
+	.home-section-heading {
+		text-align: center;
+		margin-bottom: var(--s-8);
+	}
+
+	.home-services-grid {
+		display: grid;
+		gap: var(--s-6);
+
+		@include respond(md) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.home-about {
+		background: var(--c-white);
+
+		&__inner {
+			max-width: 44rem;
+		}
+
+		&__body {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-4);
+			margin-top: var(--s-5);
+			color: var(--c-text-muted);
+		}
+	}
+</style>

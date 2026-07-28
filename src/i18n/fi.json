@@ -10,6 +10,10 @@
 	"cta.call": "Soita",
 	"cta.email": "Lähetä sähköpostia",
 	"cta.whatsapp": "WhatsApp",
+	"cta.readMore": "Lue lisää",
+	"cta.readMoreAria": "Lue lisää palvelusta",
+	"contactBand.heading": "Sovitaan lemmikillesi sopiva hoito",
+	"contactBand.body": "Jokainen koti ja lemmikki on erilainen — kerro tilanteesi, niin katsotaan yhdessä paras ratkaisu.",
 	"footer.rights": "Kaikki oikeudet pidätetään.",
 	"footer.businessId": "Y-tunnus",
 	"form.name": "Nimi",
@@ -35,5 +39,8 @@
 	"404.title": "Sivua ei löytynyt",
 	"404.body": "Etsimääsi sivua ei ole olemassa tai se on siirretty.",
 	"404.homeLink": "Etusivulle",
-	"404.contactLink": "Ota yhteyttä"
+	"404.contactLink": "Ota yhteyttä",
+	"gallery.empty": "Kuvia lisätään pian.",
+	"home.servicesHeading": "Palvelut",
+	"home.testimonialsHeading": "Asiakkaiden kokemuksia"
 }

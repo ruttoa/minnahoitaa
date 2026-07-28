@@ -1,0 +1,125 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import ServiceIcon from "./ServiceIcon.astro";
+import { useTranslations, type Locale } from "../i18n/ui";
+import { ROUTE_SLUGS } from "../lib/routes";
+
+interface Props {
+	locale: Locale;
+	slug: string;
+	title: string;
+	summary: string;
+	icon: "pets" | "cleaning" | "garden";
+}
+
+const { locale, slug, title, summary, icon } = Astro.props;
+const t = useTranslations(locale);
+const href = `${getRelativeLocaleUrl(locale, ROUTE_SLUGS.services)}#${slug}`;
+---
+
+<a href={href} class={`service-card service-card--${icon}`}>
+	<span class="service-card__glow" aria-hidden="true"></span>
+	<span class="service-card__icon">
+		<ServiceIcon icon={icon} />
+	</span>
+	<h3 class="service-card__title">{title}</h3>
+	<p class="service-card__summary">{summary}</p>
+	<span class="service-card__cta">{t("cta.readMore")}</span>
+</a>
+
+<style lang="scss">
+	.service-card {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-3);
+		padding: var(--s-7);
+		background: var(--c-white);
+		border: 1px solid var(--c-border);
+		border-radius: var(--s-2);
+		text-decoration: none;
+		color: var(--c-text);
+		overflow: hidden;
+		transition: border-color var(--dur-medium) var(--ease-standard);
+
+		&:hover,
+		&:focus-visible {
+			border-color: var(--c-lamp-500);
+
+			.service-card__glow {
+				opacity: 1;
+			}
+		}
+
+		&__glow {
+			position: absolute;
+			top: -20%;
+			left: 50%;
+			width: 14rem;
+			height: 14rem;
+			transform: translateX(-50%);
+			background: radial-gradient(circle, var(--c-lamp-500) 0%, transparent 70%);
+			filter: blur(2.5rem);
+			opacity: 0;
+			pointer-events: none;
+			z-index: 0;
+
+			@include reduced-motion {
+				transition: opacity var(--dur-slow) var(--ease-standard);
+			}
+		}
+
+		&__icon {
+			position: relative;
+			z-index: 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 3rem;
+			height: 3rem;
+			border-radius: 50%;
+			background: var(--c-frost-050);
+			color: var(--c-spruce-600);
+
+			svg {
+				width: 1.5rem;
+				height: 1.5rem;
+			}
+		}
+
+		&__title {
+			position: relative;
+			z-index: 1;
+			font-size: var(--fs-600);
+			line-height: var(--lh-600);
+		}
+
+		&__summary {
+			position: relative;
+			z-index: 1;
+			color: var(--c-text-muted);
+			max-width: none;
+		}
+
+		&__cta {
+			position: relative;
+			z-index: 1;
+			margin-top: auto;
+			padding-top: var(--s-3);
+			font-weight: 700;
+			color: var(--c-spruce-600);
+
+			&::after {
+				content: "→";
+				margin-left: var(--s-2);
+				display: inline-block;
+				transition: transform var(--dur-fast) var(--ease-standard);
+			}
+		}
+
+		&:hover &__cta::after,
+		&:focus-visible &__cta::after {
+			transform: translateX(0.25em);
+		}
+	}
+</style>

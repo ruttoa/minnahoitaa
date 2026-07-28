@@ -1,0 +1,104 @@
+---
+import { getEmDashCollection } from "emdash";
+import { formatPrice } from "../lib/format";
+import type { Locale } from "../i18n/ui";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const { entries: groups, cacheHint: groupsCacheHint } = await getEmDashCollection("price_groups", {
+	orderBy: { order: "asc" },
+});
+if (Astro.cache?.enabled) Astro.cache.set(groupsCacheHint);
+
+const groupsWithItems = await Promise.all(
+	groups.map(async (group) => {
+		const { entries: items, cacheHint } = await getEmDashCollection("price_items", {
+			where: { group: group.data.id },
+			orderBy: { order: "asc" },
+		});
+		if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+		return { group, items };
+	}),
+);
+---
+
+<div class="price-table">
+	{
+		groupsWithItems.map(({ group, items }) => (
+			<section class="price-table__group">
+				<h3>{group.data.label}</h3>
+				<dl class="price-table__list">
+					{items.map((item) => (
+						<div class="price-table__row">
+							<dt>{item.data.label}</dt>
+							<dd>
+								{typeof item.data.amount === "number" ? (
+									<>
+										<span class="price-table__amount">{formatPrice(item.data.amount, locale)}</span>
+										{item.data.unit && <span class="price-table__unit"> {item.data.unit}</span>}
+									</>
+								) : (
+									item.data.note && <span class="price-table__note">{item.data.note}</span>
+								)}
+							</dd>
+						</div>
+					))}
+				</dl>
+			</section>
+		))
+	}
+</div>
+
+<style lang="scss">
+	.price-table {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-9);
+
+		&__group {
+			h3 {
+				margin-bottom: var(--s-4);
+			}
+		}
+
+		&__list {
+			display: flex;
+			flex-direction: column;
+		}
+
+		&__row {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			gap: var(--s-4);
+			padding-block: var(--s-3);
+			border-bottom: 1px solid var(--c-border);
+
+			dt {
+				font-weight: 600;
+			}
+
+			dd {
+				text-align: right;
+				white-space: nowrap;
+			}
+		}
+
+		&__amount {
+			font-family: var(--font-display);
+			font-weight: 700;
+			font-size: var(--fs-500);
+			color: var(--c-spruce-600);
+		}
+
+		&__unit,
+		&__note {
+			color: var(--c-text-muted);
+			font-size: var(--fs-300);
+		}
+	}
+</style>

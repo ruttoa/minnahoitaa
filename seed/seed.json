@@ -412,6 +412,28 @@
 		],
 		"pages": [
 			{
+				"id": "page:koti-hero",
+				"slug": "koti-hero",
+				"status": "published",
+				"data": {
+					"title": "Joku on kotona",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "herointro1",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "herointro1s",
+									"text": "Kun lähdet reissuun, kotisi ja lemmikkisi jäävät hyviin käsiin. Hoidan lemmikkejä, siivoan kodin ja pidän pihasta huolta Länsi-Vantaalla ja koko pääkaupunkiseudulla."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"id": "page:minusta",
 				"slug": "minusta",
 				"status": "published",

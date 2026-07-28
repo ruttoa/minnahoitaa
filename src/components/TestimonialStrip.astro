@@ -1,0 +1,72 @@
+---
+import { getEmDashCollection } from "emdash";
+import type { Locale } from "../i18n/ui";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { entries: testimonials, cacheHint } = await getEmDashCollection("testimonials", {
+	locale,
+	orderBy: { order: "asc" },
+});
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+{
+	testimonials.length > 0 && (
+		<ul class="testimonial-strip">
+			{testimonials.map((item) => (
+				<li class="testimonial-strip__item">
+					<blockquote>
+						<p>{item.data.quote}</p>
+						<footer>
+							<cite>{item.data.author}</cite>
+						</footer>
+					</blockquote>
+				</li>
+			))}
+		</ul>
+	)
+}
+
+<style lang="scss">
+	.testimonial-strip {
+		display: grid;
+		gap: var(--s-6);
+
+		@include respond(md) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		&__item {
+			background: var(--c-white);
+			border: 1px solid var(--c-border);
+			border-radius: var(--s-2);
+			padding: var(--s-6);
+
+			blockquote {
+				display: flex;
+				flex-direction: column;
+				gap: var(--s-4);
+				height: 100%;
+			}
+
+			p {
+				flex: 1;
+				max-width: none;
+
+				&::before {
+					content: "“";
+					color: var(--c-lamp-500);
+				}
+
+				&::after {
+					content: "”";
+					color: var(--c-lamp-500);
+				}
+			}
+		}
+	}
+</style>

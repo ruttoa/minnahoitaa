@@ -54,6 +54,9 @@ const currentPath = Astro.url.pathname;
 		<title>{fullTitle}</title>
 		{pageDescription && <meta name="description" content={pageDescription} />}
 		{canonical && <link rel="canonical" href={canonical} />}
+		<script is:inline>
+			document.documentElement.classList.add("js");
+		</script>
 		{
 			locales.map((loc) => (
 				<link

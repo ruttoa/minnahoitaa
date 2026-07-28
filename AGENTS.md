@@ -25,7 +25,8 @@ The admin UI is at `http://localhost:4321/_emdash/admin`.
 | `src/i18n/ui.ts` + `fi.json`/`en.json` | Typed `t()` helper for every non-CMS user-visible string. **Zero bare Finnish string literals in `.astro` templates** — this is a hard rule, checked in Phase 8 QA. |
 | `src/lib/routes.ts` | `CONTACT_PATH` — every CTA on the site resolves through this constant. Never hardcode `/ota-yhteytta/` elsewhere. |
 | `src/styles/` | `abstracts/` (tokens/mixins/breakpoints), `base/` (reset/typography/a11y/forms), `layout/` (`.l-container`/`.l-grid`/`.l-section` — section spacing owned only by `_l-section.scss`) |
-| `src/pages/` | Astro pages — all server-rendered, fi at root, en under `/en/` |
+| `src/pages/` | Astro pages — all server-rendered, fi at root, en under `/en/`. `index.astro` is the real homepage (Hero, ServiceCard grid, About, TestimonialStrip, ContactBand), not a placeholder. |
+| `src/components/SiteHeader.astro` | Mobile nav is a real disclosure, not a `<details>` fallback: nav is inline/always-visible in the no-JS baseline (no toggle button, since it starts `hidden`); a tiny inline script in `BaseLayout` adds `html.js`, which is what lets CSS turn the nav into a collapsible panel and reveal the toggle below the `lg` breakpoint. The Escape-closes-and-refocuses listener is bound to `document`, not the `nav` — focus sits on the toggle button (outside `nav`) when the panel is open, so a `nav`-scoped listener never fires. |
 
 ## Skills
 

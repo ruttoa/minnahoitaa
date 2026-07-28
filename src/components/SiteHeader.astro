@@ -24,7 +24,19 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 	<div class="l-container site-header__inner">
 		<a href={homeHref} class="site-header__logo">{siteTitle}</a>
 
-		<nav class="site-header__nav" aria-label={t("nav.primaryLabel")}>
+		<button
+			type="button"
+			class="site-header__toggle"
+			id="nav-toggle"
+			aria-expanded="false"
+			aria-controls="primary-nav"
+			hidden
+		>
+			<span class="site-header__toggle-label">{t("nav.menuOpen")}</span>
+			<span class="site-header__toggle-icon" aria-hidden="true"></span>
+		</button>
+
+		<nav class="site-header__nav" id="primary-nav" aria-label={t("nav.primaryLabel")}>
 			<ul class="site-header__menu">
 				{
 					menu?.items.map((item) => (
@@ -40,6 +52,13 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 					))
 				}
 			</ul>
+
+			<div class="site-header__nav-actions">
+				<LanguageSwitcher locale={locale} currentPath={currentPath} />
+				<Button href={contactHref} variant="accent" ariaLabel={t("cta.contactAria")}>
+					{t("cta.contact")}
+				</Button>
+			</div>
 		</nav>
 
 		<div class="site-header__actions">
@@ -55,6 +74,8 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 	.site-header {
 		background: var(--c-surface);
 		border-bottom: 1px solid var(--c-border);
+		position: relative;
+		z-index: 100;
 
 		&__inner {
 			display: flex;
@@ -72,16 +93,128 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 			color: var(--c-spruce-600);
 		}
 
-		&__nav {
+		// Toggle button: hidden by default (no-JS baseline shows the full nav
+		// inline, see &__nav below). JS removes the `hidden` attribute, and
+		// only becomes visible below the `lg` breakpoint where the nav turns
+		// into a collapsible panel.
+		&__toggle {
 			display: none;
+			align-items: center;
+			justify-content: center;
+			width: 44px;
+			height: 44px;
+			border-radius: var(--s-1);
 
+			:global(html.js) &:not([hidden]) {
+				@media (max-width: 1023px) {
+					display: inline-flex;
+				}
+			}
+		}
+
+		&__toggle-label {
+			@include visually-hidden;
+		}
+
+		&__toggle-icon,
+		&__toggle-icon::before,
+		&__toggle-icon::after {
+			display: block;
+			width: 20px;
+			height: 2px;
+			background: var(--c-spruce-900);
+			border-radius: 2px;
+			transition: transform var(--dur-fast) var(--ease-standard);
+		}
+
+		&__toggle-icon {
+			position: relative;
+
+			&::before,
+			&::after {
+				content: "";
+				position: absolute;
+				left: 0;
+			}
+
+			&::before {
+				top: -6px;
+			}
+
+			&::after {
+				top: 6px;
+			}
+		}
+
+		&__toggle[aria-expanded="true"] &__toggle-icon {
+			background: transparent;
+
+			&::before {
+				top: 0;
+				transform: rotate(45deg);
+			}
+
+			&::after {
+				top: 0;
+				transform: rotate(-45deg);
+			}
+		}
+
+		// No-JS / desktop baseline: nav is part of normal flow, always visible.
+		&__nav {
 			@include respond(lg) {
-				display: block;
+				flex: 1;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-left: var(--s-7);
+			}
+		}
+
+		&__nav-actions {
+			display: none;
+		}
+
+		// JS-enhanced mobile state: nav becomes a collapsible panel.
+		:global(html.js) &__nav {
+			@media (max-width: 1023px) {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				background: var(--c-surface);
+				border-bottom: 1px solid var(--c-border);
+				padding: var(--s-5) var(--container-gutter) var(--s-7);
+				display: none;
+
+				&--open {
+					display: block;
+				}
+
+				.site-header__menu {
+					flex-direction: column;
+					gap: var(--s-4);
+					margin-bottom: var(--s-6);
+				}
+
+				.site-header__nav-actions {
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
+					gap: var(--s-4);
+				}
+			}
+		}
+
+		:global(html.js) &__actions {
+			@media (max-width: 1023px) {
+				display: none;
 			}
 		}
 
 		&__menu {
 			display: flex;
+			flex-wrap: wrap;
 			gap: var(--s-6);
 
 			a {
@@ -104,3 +237,25 @@ const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
 		}
 	}
 </style>
+
+<script>
+	const toggle = document.getElementById("nav-toggle");
+	const nav = document.getElementById("primary-nav");
+
+	if (toggle && nav) {
+		toggle.hidden = false;
+
+		toggle.addEventListener("click", () => {
+			const isOpen = nav.classList.toggle("site-header__nav--open");
+			toggle.setAttribute("aria-expanded", String(isOpen));
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape" && nav.classList.contains("site-header__nav--open")) {
+				nav.classList.remove("site-header__nav--open");
+				toggle.setAttribute("aria-expanded", "false");
+				toggle.focus();
+			}
+		});
+	}
+</script>
