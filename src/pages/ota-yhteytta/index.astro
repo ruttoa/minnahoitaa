@@ -1,6 +1,7 @@
 ---
 import { getEmDashCollection } from "emdash";
 import PageLayout from "../../layouts/PageLayout.astro";
+import ContactForm from "../../components/ContactForm.astro";
 import { useTranslations, isLocale, defaultLocale } from "../../i18n/ui";
 import { formatPhoneDisplay } from "../../lib/format";
 
@@ -61,7 +62,7 @@ const whatsappHref = info?.whatsapp_e164 ? `https://wa.me/${info.whatsapp_e164.r
 
 		<div class="contact-page__form">
 			<h2>{t("contact.formHeading")}</h2>
-			<p class="contact-page__form-placeholder">— lomake tulossa —</p>
+			<ContactForm locale={locale} />
 		</div>
 	</div>
 </PageLayout>
@@ -104,11 +105,6 @@ const whatsappHref = info?.whatsapp_e164 ? `https://wa.me/${info.whatsapp_e164.r
 
 		&__response-time {
 			color: var(--c-text-muted);
-		}
-
-		&__form-placeholder {
-			color: var(--c-text-muted);
-			font-style: italic;
 		}
 	}
 </style>

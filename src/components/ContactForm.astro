@@ -1,0 +1,355 @@
+---
+// Renders the "yhteydenotto" form (created via scripts/setup-contact-form.sh
+// against the @emdash-cms/plugin-forms admin API — forms aren't part of
+// seed/seed.json, the plugin has no seed-file integration).
+//
+// The consent checkbox's label is plain text (the plugin's field schema
+// doesn't support rich text/links in labels), so the privacy-statement link
+// required by PLAN.md §7 is rendered here instead, directly below the form.
+import { PortableText } from "emdash/ui";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { useTranslations, type Locale } from "../i18n/ui";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const privacyHref = getRelativeLocaleUrl(locale, "tietosuoja");
+
+const formBlock = [{ _type: "emdash-form", _key: "contact-form", formId: "yhteydenotto" }];
+---
+
+<div class="contact-form" data-required-message={t("form.required")}>
+	<div class="contact-form__error-summary" role="alert" tabindex="-1" hidden>
+		<p>{t("form.errorSummary")}</p>
+		<ul></ul>
+	</div>
+	<PortableText value={formBlock} />
+	<p class="contact-form__privacy-note">
+		<a href={privacyHref}>{t("form.consentLink")}</a>
+	</p>
+</div>
+
+<style lang="scss">
+	.contact-form {
+		&__privacy-note {
+			margin-top: var(--s-5);
+			font-size: var(--fs-300);
+			color: var(--c-text-muted);
+
+			a {
+				color: var(--c-spruce-600);
+				font-weight: 600;
+			}
+		}
+
+		&__error-summary {
+			margin-bottom: var(--s-6);
+			padding: var(--s-5);
+			border: 1px solid var(--c-error);
+			border-radius: var(--s-2);
+			background: color-mix(in srgb, var(--c-rowan-600) 8%, white);
+
+			&[hidden] {
+				display: none;
+			}
+
+			p {
+				font-weight: 700;
+				color: var(--c-error);
+				margin-bottom: var(--s-2);
+			}
+
+			ul {
+				display: flex;
+				flex-direction: column;
+				gap: var(--s-1);
+			}
+
+			a {
+				color: var(--c-error);
+				text-decoration: underline;
+			}
+
+			&:focus-visible {
+				outline: var(--focus-ring-width) solid var(--focus-ring-color);
+				outline-offset: var(--focus-ring-offset);
+			}
+		}
+	}
+</style>
+
+<style lang="scss" is:global>
+	// The plugin's own component tree isn't part of this component's render
+	// output, so Astro's scoped <style> can't reach it (a scoped-but-nested
+	// `:global()` wrapper only exempts the exact selector inside the parens —
+	// every other compound selector in the same rule still gets Astro's scope
+	// attribute appended, which then never matches the plugin's unscoped
+	// markup). A whole-block `is:global` is the correct tool here; textually
+	// prefixing every rule with `.contact-form` keeps it scoped in effect.
+	.contact-form {
+		.ec-form {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-5);
+		}
+
+		.ec-form-page {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--s-5);
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.ec-form-field {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-1);
+			width: 100%;
+		}
+
+		.ec-form-field--half {
+			width: calc(50% - var(--s-5) / 2);
+
+			@media (max-width: 640px) {
+				width: 100%;
+			}
+		}
+
+		.ec-form-field--checkbox {
+			flex-direction: row;
+		}
+
+		.ec-form-label {
+			font-size: var(--fs-300);
+			font-weight: 600;
+		}
+
+		.ec-form-required {
+			color: var(--c-error);
+			margin-left: 0.125rem;
+		}
+
+		.ec-form-input,
+		.ec-form select,
+		.ec-form textarea {
+			display: block;
+			width: 100%;
+			min-height: 44px;
+			padding: var(--s-3) var(--s-4);
+			background: var(--c-white);
+			border: 1px solid var(--c-border);
+			border-radius: var(--s-1);
+			font: inherit;
+			font-size: var(--fs-400);
+			box-sizing: border-box;
+		}
+
+		.ec-form-input:focus-visible,
+		.ec-form select:focus-visible,
+		.ec-form textarea:focus-visible {
+			outline: var(--focus-ring-width) solid var(--focus-ring-color);
+			outline-offset: var(--focus-ring-offset);
+		}
+
+		.ec-form textarea {
+			min-height: 8rem;
+			resize: vertical;
+		}
+
+		.ec-form-help {
+			font-size: var(--fs-300);
+			color: var(--c-text-muted);
+		}
+
+		.ec-form-error {
+			font-size: var(--fs-300);
+			color: var(--c-error);
+			min-height: 1em;
+		}
+
+		.ec-form-error:empty {
+			display: none;
+		}
+
+		.ec-form-checkbox-label {
+			display: flex;
+			align-items: flex-start;
+			gap: var(--s-2);
+			font-size: var(--fs-300);
+			cursor: pointer;
+
+			input {
+				margin-top: 0.2em;
+				width: auto;
+				min-height: auto;
+			}
+		}
+
+		.ec-form-nav {
+			display: flex;
+			gap: var(--s-4);
+			align-items: center;
+		}
+
+		.ec-form-submit {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 44px;
+			padding: var(--s-3) var(--s-6);
+			border-radius: var(--s-1);
+			border: 1px solid transparent;
+			background: var(--c-lamp-500);
+			color: var(--c-spruce-900);
+			font-weight: 700;
+			font-size: var(--fs-400);
+			cursor: pointer;
+			transition: background-color var(--dur-fast) var(--ease-standard);
+		}
+
+		.ec-form-submit:hover {
+			background: color-mix(in srgb, var(--c-lamp-500) 85%, black);
+		}
+
+		.ec-form-submit:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.ec-form-submit:focus-visible {
+			outline: var(--focus-ring-width) solid var(--focus-ring-color);
+			outline-offset: var(--focus-ring-offset);
+		}
+
+		.ec-form-status {
+			padding: var(--s-4);
+			border-radius: var(--s-1);
+			font-size: var(--fs-400);
+		}
+
+		.ec-form-status:empty {
+			display: none;
+		}
+
+		.ec-form-status--success {
+			background: color-mix(in srgb, var(--c-spruce-600) 10%, white);
+			color: var(--c-spruce-900);
+			border: 1px solid var(--c-spruce-600);
+		}
+
+		.ec-form-status--error {
+			background: color-mix(in srgb, var(--c-rowan-600) 10%, white);
+			color: var(--c-rowan-600);
+			border: 1px solid var(--c-rowan-600);
+		}
+	}
+</style>
+
+<script>
+	// Layers PLAN.md §7's exact a11y spec (error summary + focus management,
+	// aria-invalid) on top of @emdash-cms/plugin-forms's own client script,
+	// which does inline errors but not this. Reacts only to the native
+	// validity API — doesn't depend on the plugin's internals, so it keeps
+	// working across plugin updates.
+	function labelFor(field: HTMLElement): string {
+		const label = (field as HTMLInputElement).labels?.[0];
+		return label?.textContent?.replace(/\s*\*\s*$/, "").trim() || field.getAttribute("name") || "";
+	}
+
+	function init(container: HTMLElement) {
+		const form = container.querySelector<HTMLFormElement>("[data-ec-form]");
+		const summary = container.querySelector<HTMLElement>(".contact-form__error-summary");
+		const list = summary?.querySelector("ul");
+		if (!form || !summary || !list) return;
+
+		const requiredMessage = container.dataset.requiredMessage || "";
+
+		// No-JS baseline relies on native constraint validation (browser's own
+		// accessible popup). Once this script runs, take over so the submit
+		// event always fires and our custom summary/focus handling — and the
+		// plugin's own inline errors — can run instead.
+		form.noValidate = true;
+
+		// The plugin's own client script restores the submit button's label
+		// from `form.dataset.submitLabel` after a submission — but its own
+		// server template never sets that dataset attribute, so it silently
+		// falls back to the hardcoded English "Submit". Populate it from the
+		// button's actual (localized) server-rendered text.
+		const submitBtn = form.querySelector<HTMLButtonElement>(".ec-form-submit");
+		if (submitBtn?.textContent) {
+			form.dataset.submitLabel = submitBtn.textContent.trim();
+		}
+
+		function fields(): (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)[] {
+			return Array.from(form!.querySelectorAll("input, select, textarea"));
+		}
+
+		// The plugin's own textarea template leaves stray whitespace as the
+		// initial value (indentation around a `{field.defaultValue || ""}`
+		// expression), which satisfies the native `required` constraint even
+		// when the visitor typed nothing — checkValidity() alone isn't enough.
+		function isRequiredButBlank(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): boolean {
+			return field.hasAttribute("required") && field.value.trim() === "";
+		}
+
+		function isInvalid(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): boolean {
+			return !field.checkValidity() || isRequiredButBlank(field);
+		}
+
+		function messageFor(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): string {
+			return field.validationMessage || requiredMessage;
+		}
+
+		function markValidity(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) {
+			if (isInvalid(field)) {
+				field.setAttribute("aria-invalid", "true");
+			} else {
+				field.removeAttribute("aria-invalid");
+			}
+		}
+
+		form.addEventListener(
+			"submit",
+			() => {
+				const invalid = fields().filter(isInvalid);
+				fields().forEach(markValidity);
+
+				if (invalid.length === 0) {
+					summary.hidden = true;
+					list.replaceChildren();
+					return;
+				}
+
+				list.replaceChildren(
+					...invalid.map((field) => {
+						const li = document.createElement("li");
+						const a = document.createElement("a");
+						a.href = `#${field.id}`;
+						a.textContent = `${labelFor(field)}: ${messageFor(field)}`;
+						a.addEventListener("click", (clickEvent) => {
+							clickEvent.preventDefault();
+							field.focus();
+						});
+						li.appendChild(a);
+						return li;
+					}),
+				);
+				summary.hidden = false;
+				summary.focus();
+			},
+			{ capture: true },
+		);
+
+		form.addEventListener("input", (e) => {
+			const field = e.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+			if (field && "checkValidity" in field) markValidity(field);
+		});
+	}
+
+	document.querySelectorAll<HTMLElement>(".contact-form").forEach(init);
+</script>

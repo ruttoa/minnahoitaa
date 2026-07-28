@@ -1,0 +1,72 @@
+{
+	"name": "Yhteydenottolomake",
+	"slug": "yhteydenotto",
+	"pages": [
+		{
+			"fields": [
+				{
+					"id": "f-nimi",
+					"type": "text",
+					"label": "Nimi",
+					"name": "nimi",
+					"required": true,
+					"width": "full"
+				},
+				{
+					"id": "f-email",
+					"type": "email",
+					"label": "Sähköposti",
+					"name": "sahkoposti",
+					"required": true,
+					"width": "half"
+				},
+				{
+					"id": "f-puhelin",
+					"type": "tel",
+					"label": "Puhelin (valinnainen)",
+					"name": "puhelin",
+					"required": false,
+					"width": "half"
+				},
+				{
+					"id": "f-palvelu",
+					"type": "select",
+					"label": "Palvelu",
+					"name": "palvelu",
+					"required": true,
+					"width": "full",
+					"options": [
+						{ "label": "Lemmikkihoito", "value": "pets" },
+						{ "label": "Kodinhoito", "value": "cleaning" },
+						{ "label": "Puutarhanhoito", "value": "garden" },
+						{ "label": "Useampi palvelu", "value": "combination" }
+					]
+				},
+				{
+					"id": "f-viesti",
+					"type": "textarea",
+					"label": "Viesti",
+					"name": "viesti",
+					"required": true,
+					"width": "full"
+				},
+				{
+					"id": "f-suostumus",
+					"type": "checkbox",
+					"label": "Hyväksyn tietojeni käsittelyn tietosuojaselosteen mukaisesti",
+					"name": "suostumus",
+					"required": true,
+					"width": "full"
+				}
+			]
+		}
+	],
+	"settings": {
+		"confirmationMessage": "Kiitos viestistäsi! Vastaan yleensä vuorokauden kuluessa. Kiireellisissä asioissa voit myös soittaa tai laittaa WhatsApp-viestiä.",
+		"notifyEmails": ["minna.petsitter@gmail.com"],
+		"digestEnabled": false,
+		"spamProtection": "honeypot",
+		"submitLabel": "Lähetä viesti",
+		"retentionDays": 0
+	}
+}

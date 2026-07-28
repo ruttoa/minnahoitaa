@@ -45,13 +45,25 @@ Once set up, the client (or any editor) manages all copy, pricing, testimonials,
 
 ### Reseeding from scratch
 
-The full content set (Finnish + English) lives in `seed/seed.json` so the site is reproducible on a fresh database:
+The content set (Finnish so far; English lands in a later phase) lives in `seed/seed.json`, applied automatically the first time the dev server boots against an empty database. To force a full reseed locally:
+
+```bash
+pnpm astro dev stop
+rm -rf .wrangler/state       # wipes local D1/R2/KV — disposable dev state only
+pnpm dev
+```
+
+Then sign in once via `http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin` (skips the passkey step — dev only) to trigger the seed apply, and run:
+
+```bash
+./scripts/setup-contact-form.sh
+```
+
+to recreate the contact form. **The contact form is not part of `seed/seed.json`** — it's configured through the `@emdash-cms/plugin-forms` admin API, which has no seed-file integration, so this script is the only way to reproduce it. See [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms) for why, and for two plugin bugs worked around in `src/components/ContactForm.astro`.
 
 ```bash
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
 ```
-
-(Seeding workflow will be documented here once the Phase 2 content model — collections, seed data — lands; see PLAN.md's build-phase checklist.)
 
 ## Project structure
 
@@ -74,6 +86,8 @@ src/
                    format.ts (price/phone formatting)
 content-source/    Archived old-site text + images for reference (gitignored, not
                    part of the build — see docs/media-credits.md for licensing)
+scripts/           setup-contact-form.sh + contact-form.json — recreates the
+                   contact form after a reseed (see "Reseeding from scratch" above)
 ```
 
 ## Styling rules
@@ -92,4 +106,11 @@ No inline `style="…"` attributes, no Tailwind, no `!important`. Component styl
 
 ## Dependency pinning
 
-`emdash`, `@emdash-cms/cloudflare`, and `astro` are pinned to **exact** versions (no `^`) in `package.json` — EmDash is beta and its API is still moving. Bump deliberately, re-test the admin and a full build after bumping, and update the pin in the same commit.
+`emdash`, `@emdash-cms/cloudflare`, `@emdash-cms/plugin-forms`, and `astro` are pinned to **exact** versions (no `^`) in `package.json` — EmDash is beta and its API is still moving. Bump deliberately, re-test the admin, the contact form (see below), and a full build after bumping, and update the pin in the same commit.
+
+## Known open items before launch
+
+- **Privacy statement** (`/tietosuoja/`) is a draft — flagged on the page itself, needs legal review before going live.
+- **Contact form email delivery** hasn't been confirmed end-to-end — submissions confirmed landing in the admin, but whether the notification email actually reaches `minna.petsitter@gmail.com` needs a live check (see [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms)).
+- **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
+- **Gallery photos**: `gallery_items` is seeded empty — needs the client's go-ahead on which personal pet photos can be published (see `docs/media-credits.md`).

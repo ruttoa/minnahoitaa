@@ -412,6 +412,118 @@
 		],
 		"pages": [
 			{
+				"id": "page:tietosuoja",
+				"slug": "tietosuoja",
+				"status": "published",
+				"data": {
+					"title": "Tietosuojaseloste",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-note",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-note-s",
+									"text": "Tämä on luonnos, eikä sitä ole vielä tarkistanut lakiasiantuntija. Tarkista sisältö ennen sivuston julkaisua."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h1",
+							"children": [{ "_type": "span", "_key": "ts-h1s", "text": "Rekisterinpitäjä" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p1",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p1s",
+									"text": "Minna Rättyä (toiminimi, Y-tunnus 3481889-8). Yhteydenotot tietosuoja-asioissa: minna.petsitter@gmail.com."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h2",
+							"children": [{ "_type": "span", "_key": "ts-h2s", "text": "Mitä tietoja kerätään" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p2",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p2s",
+									"text": "Yhteydenottolomakkeen kautta: nimi, sähköpostiosoite, mahdollinen puhelinnumero, valittu palvelu ja viestin sisältö. Muuta tietoa ei kerätä sivuston selaamisen yhteydessä."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h3",
+							"children": [{ "_type": "span", "_key": "ts-h3s", "text": "Käyttötarkoitus" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p3",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p3s",
+									"text": "Tietoja käytetään ainoastaan yhteydenottoon vastaamiseen ja pyydetyn palvelun tarjoamiseen. Tietoja ei käytetä markkinointiin ilman erillistä suostumusta, eikä niitä luovuteta kolmansille osapuolille lukuun ottamatta sivuston teknisiä palveluntarjoajia (Cloudflare, sivuston hosting- ja tietokantapalvelu)."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h4",
+							"children": [{ "_type": "span", "_key": "ts-h4s", "text": "Säilytysaika" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p4",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p4s",
+									"text": "Yhteydenottoja säilytetään toistaiseksi, kunnes ne poistetaan manuaalisesti."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h5",
+							"children": [{ "_type": "span", "_key": "ts-h5s", "text": "Oikeutesi" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p5",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p5s",
+									"text": "Sinulla on oikeus tarkastaa, oikaista ja pyytää poistamaan sinusta tallennetut tiedot. Ota yhteyttä yllä olevaan sähköpostiosoitteeseen. Sinulla on myös oikeus tehdä valitus tietosuojavaltuutetun toimistolle."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
 				"id": "page:koti-hero",
 				"slug": "koti-hero",
 				"status": "published",

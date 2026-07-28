@@ -1,0 +1,31 @@
+---
+import { getEmDashEntry } from "emdash";
+import { PortableText } from "emdash/ui";
+import PageLayout from "../../layouts/PageLayout.astro";
+import { isLocale, defaultLocale } from "../../i18n/ui";
+
+const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
+
+const { entry, cacheHint } = await getEmDashEntry("pages", "tietosuoja", { locale });
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+<PageLayout title="Tietosuojaseloste" heading={entry?.data.title ?? "Tietosuojaseloste"}>
+	<div class="l-container tietosuoja">
+		{entry && <PortableText value={entry.data.content} />}
+	</div>
+</PageLayout>
+
+<style lang="scss">
+	.tietosuoja {
+		max-width: 44rem;
+		padding-bottom: var(--s-11);
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-4);
+
+		:global(h2) {
+			margin-top: var(--s-7);
+		}
+	}
+</style>
