@@ -1,126 +1,153 @@
 {
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
+	"defaultLocale": "fi",
 	"meta": {
-		"name": "Starter",
-		"description": "A minimal EmDash starter with posts and pages",
-		"author": "EmDash"
+		"name": "Minna hoitaa",
+		"description": "Lemmikkihoitoa, kodinhoitoa ja puutarhanhoitoa Länsi-Vantaalla ja pääkaupunkiseudulla.",
+		"author": "Minna Rättyä"
 	},
 	"settings": {
-		"title": "My Site",
-		"tagline": "Built with EmDash"
+		"title": "Minna hoitaa",
+		"tagline": "Lemmikkihoitoa, kodinhoitoa ja puutarhanhoitoa Vantaalla",
+		"social": {
+			"facebook": "https://www.facebook.com/people/Minna-hoitaa/61583514297558/"
+		}
 	},
 	"collections": [
 		{
-			"slug": "posts",
-			"label": "Posts",
-			"labelSingular": "Post",
-			"supports": ["drafts", "revisions", "search", "seo"],
+			"slug": "services",
+			"label": "Palvelut",
+			"labelSingular": "Palvelu",
+			"description": "Kolme ydinpalvelua: lemmikkihoito, kodinhoito, puutarhanhoito.",
+			"urlPattern": "/palvelut/{slug}",
+			"supports": ["drafts", "revisions", "seo"],
 			"fields": [
+				{ "slug": "title", "label": "Otsikko", "type": "string", "required": true, "searchable": true },
+				{ "slug": "summary", "label": "Lyhyt kuvaus (korttiin)", "type": "text", "required": true },
 				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
+					"slug": "icon",
+					"label": "Kuvake",
+					"type": "select",
 					"required": true,
-					"searchable": true
+					"validation": { "options": ["pets", "cleaning", "garden"] }
 				},
+				{ "slug": "body", "label": "Kuvaus", "type": "portableText", "required": true, "searchable": true },
 				{
-					"slug": "featured_image",
-					"label": "Featured Image",
-					"type": "image"
+					"slug": "bullets",
+					"label": "Kohokohdat",
+					"type": "repeater",
+					"validation": {
+						"subFields": [{ "slug": "text", "type": "string", "label": "Teksti", "required": true }]
+					}
 				},
+				{ "slug": "image", "label": "Kuva", "type": "image" },
+				{ "slug": "order", "label": "Järjestys", "type": "integer", "defaultValue": 0 }
+			]
+		},
+		{
+			"slug": "testimonials",
+			"label": "Asiakaskokemukset",
+			"labelSingular": "Asiakaskokemus",
+			"fields": [
+				{ "slug": "quote", "label": "Lainaus", "type": "text", "required": true, "searchable": true },
+				{ "slug": "author", "label": "Etunimi", "type": "string", "required": true },
 				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
+					"slug": "service",
+					"label": "Liittyvä palvelu",
+					"type": "reference",
+					"options": { "collection": "services" }
 				},
+				{ "slug": "order", "label": "Järjestys", "type": "integer", "defaultValue": 0 }
+			]
+		},
+		{
+			"slug": "price_groups",
+			"label": "Hintaryhmät",
+			"labelSingular": "Hintaryhmä",
+			"fields": [
+				{ "slug": "label", "label": "Nimi", "type": "string", "required": true },
+				{ "slug": "order", "label": "Järjestys", "type": "integer", "defaultValue": 0 }
+			]
+		},
+		{
+			"slug": "price_items",
+			"label": "Hinnaston rivit",
+			"labelSingular": "Hinnaston rivi",
+			"fields": [
+				{ "slug": "label", "label": "Nimi", "type": "string", "required": true },
+				{ "slug": "amount", "label": "Hinta (numero)", "type": "number" },
+				{ "slug": "unit", "label": "Yksikkö / lisäteksti", "type": "string" },
+				{ "slug": "note", "label": "Huomautus", "type": "text" },
 				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text"
-				}
+					"slug": "group",
+					"label": "Hintaryhmä",
+					"type": "reference",
+					"required": true,
+					"options": { "collection": "price_groups" }
+				},
+				{ "slug": "order", "label": "Järjestys", "type": "integer", "defaultValue": 0 }
+			]
+		},
+		{
+			"slug": "gallery_items",
+			"label": "Kuvagalleria",
+			"labelSingular": "Kuva",
+			"fields": [
+				{ "slug": "image", "label": "Kuva", "type": "image", "required": true },
+				{ "slug": "alt", "label": "Alt-teksti", "type": "string", "required": true },
+				{ "slug": "caption", "label": "Kuvateksti", "type": "text" },
+				{ "slug": "order", "label": "Järjestys", "type": "integer", "defaultValue": 0 }
+			]
+		},
+		{
+			"slug": "business_info",
+			"label": "Yrityksen tiedot",
+			"labelSingular": "Yrityksen tiedot",
+			"description": "Yksi ainoa rivi. Puhelin, sähköposti, WhatsApp, Y-tunnus ja toiminta-alue — asetuksia täydentävät tiedot, joita EmDashin sivustoasetukset eivät tue.",
+			"fields": [
+				{ "slug": "phone_e164", "label": "Puhelin (E.164)", "type": "string", "required": true },
+				{ "slug": "phone_display", "label": "Puhelin (näytettävä muoto)", "type": "string", "required": true },
+				{ "slug": "email", "label": "Sähköposti", "type": "string", "required": true },
+				{ "slug": "whatsapp_e164", "label": "WhatsApp (E.164)", "type": "string" },
+				{ "slug": "business_id", "label": "Y-tunnus", "type": "string", "required": true },
+				{ "slug": "service_area", "label": "Toiminta-alue", "type": "text", "required": true }
 			]
 		},
 		{
 			"slug": "pages",
-			"label": "Pages",
-			"labelSingular": "Page",
-			"urlPattern": "/{slug}",
+			"label": "Sivut",
+			"labelSingular": "Sivu",
+			"description": "Proosakatkelmia, jotka upotetaan omiin Astro-reitteihin (ei yleistä /{slug}-reititystä).",
 			"supports": ["drafts", "revisions", "search"],
 			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				}
-			]
-		}
-	],
-	"taxonomies": [
-		{
-			"name": "category",
-			"label": "Categories",
-			"labelSingular": "Category",
-			"hierarchical": true,
-			"collections": ["posts"],
-			"terms": [
-				{
-					"slug": "general",
-					"label": "General"
-				},
-				{
-					"slug": "updates",
-					"label": "Updates"
-				}
-			]
-		},
-		{
-			"name": "tag",
-			"label": "Tags",
-			"labelSingular": "Tag",
-			"hierarchical": false,
-			"collections": ["posts"],
-			"terms": [
-				{
-					"slug": "starter",
-					"label": "Starter"
-				},
-				{
-					"slug": "example",
-					"label": "Example"
-				}
+				{ "slug": "title", "label": "Otsikko", "type": "string", "required": true, "searchable": true },
+				{ "slug": "content", "label": "Sisältö", "type": "portableText", "searchable": true }
 			]
 		}
 	],
 	"menus": [
 		{
 			"name": "primary",
-			"label": "Primary Navigation",
+			"label": "Päävalikko",
+			"locale": "fi",
 			"items": [
-				{
-					"type": "custom",
-					"label": "Home",
-					"url": "/"
-				},
-				{
-					"type": "custom",
-					"label": "Posts",
-					"url": "/posts"
-				},
-				{
-					"type": "custom",
-					"label": "About",
-					"url": "/about"
-				}
+				{ "type": "custom", "label": "Etusivu", "url": "/" },
+				{ "type": "custom", "label": "Palvelut", "url": "/palvelut" },
+				{ "type": "custom", "label": "Hinnasto", "url": "/hinnasto" },
+				{ "type": "custom", "label": "Kuvagalleria", "url": "/galleria" },
+				{ "type": "custom", "label": "Ota yhteyttä", "url": "/ota-yhteytta" }
+			]
+		},
+		{
+			"name": "footer",
+			"label": "Alatunnisteen valikko",
+			"locale": "fi",
+			"items": [
+				{ "type": "custom", "label": "Palvelut", "url": "/palvelut" },
+				{ "type": "custom", "label": "Hinnasto", "url": "/hinnasto" },
+				{ "type": "custom", "label": "Kuvagalleria", "url": "/galleria" },
+				{ "type": "custom", "label": "Ota yhteyttä", "url": "/ota-yhteytta" }
 			]
 		}
 	],
@@ -129,103 +156,365 @@
 			"name": "sidebar",
 			"label": "Sidebar",
 			"description": "Sidebar widget area",
-			"widgets": [
-				{
-					"type": "component",
-					"componentId": "core:search",
-					"title": "Search"
-				},
-				{
-					"type": "component",
-					"componentId": "core:categories",
-					"title": "Categories"
-				},
-				{
-					"type": "component",
-					"componentId": "core:recent-posts",
-					"title": "Recent Posts",
-					"settings": {
-						"count": 5
-					}
-				}
-			]
+			"widgets": []
 		}
 	],
 	"content": {
-		"pages": [
+		"business_info": [
 			{
-				"id": "about",
-				"slug": "about",
+				"id": "biz:main",
+				"slug": "main",
 				"status": "published",
 				"data": {
-					"title": "About",
-					"content": [
+					"phone_e164": "+3584578314323",
+					"phone_display": "045 783 14323",
+					"email": "minna.petsitter@gmail.com",
+					"whatsapp_e164": "+3584578314323",
+					"business_id": "3481889-8",
+					"service_area": "Pääkaupunkiseutu (HSL-vyöhykkeet A–C maksuttomalle tutustumiskäynnille); pidempi hoitojakso mahdollistaa matkan kauemmaksikin."
+				}
+			}
+		],
+		"services": [
+			{
+				"id": "svc:pets",
+				"slug": "lemmikkihoito",
+				"status": "published",
+				"data": {
+					"title": "Lemmikkihoito",
+					"summary": "Hoidan koiraa, kissaa tai muuta lemmikkiä kotonasi tai omassa kodissani — aina yksi talous kerrallaan, aina sovitusti.",
+					"icon": "pets",
+					"order": 1,
+					"body": [
 						{
 							"_type": "block",
 							"style": "normal",
+							"_key": "svcpets1",
 							"children": [
 								{
 									"_type": "span",
-									"text": "This is the about page. Edit it in the admin panel or replace this template with your own design.",
-									"_key": "k1"
+									"_key": "svcpets1s",
+									"text": "Hoidan koiria, kissoja ja useimpia pieniä lemmikkejä pääkaupunkiseudulla — pidempikin matka onnistuu, jos hoitojakso on riittävän pitkä. Hoito tapahtuu useimmiten lemmikin omassa kodissa: vuorokausihoidon aikana olen paikalla koko ajan, tai niin kuin erikseen sovimme. Otan kotiini kerrallaan yhden talouden lemmikit — 1–2 kissaa tai enintään keskikokoisen koiran. Kotini on hissillinen kerrostalokaksio Länsi-Vantaalla, aivan Lammaslammen virkistysalueen kupeessa."
 								}
-							],
-							"_key": "k0"
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcpets2",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcpets2s",
+									"text": "Teemme aina kirjallisen hoitosopimuksen, ja ensimmäinen tutustumiskäynti on maksuton HSL:n A–C-vyöhykkeillä. Hintaan kuuluu yksilöllinen ruokinta ja veden vaihto, leikki ja rapsutukset lemmikin toiveiden mukaan, yksilölliset ulkoilut, hiekkalaatikon siivous sekä pienet kodinhoitotyöt hoitojakson aikana. Saat päivityksiä kuvin ja videoin, ja tarvittaessa hoidan myös lääkitykset ja muut hoitotoimenpiteet. Toiminnallani on voimassa oleva vastuuvakuutus."
+								}
+							]
 						}
+					],
+					"bullets": [
+						{ "text": "Hoito lemmikin omassa kodissa tai luonani" },
+						{ "text": "Vain yhden talouden lemmikit kerrallaan" },
+						{ "text": "Lääkitykset ja yksilöllinen hoito onnistuvat" },
+						{ "text": "Maksuton tutustumiskäynti pääkaupunkiseudulla" }
+					]
+				}
+			},
+			{
+				"id": "svc:cleaning",
+				"slug": "kodinhoito",
+				"status": "published",
+				"data": {
+					"title": "Kodinhoitopalvelut",
+					"summary": "Kodin perus- ja ylläpitosiivous — joko lemmikkihoidon yhteydessä tai omana palveluna.",
+					"icon": "cleaning",
+					"order": 2,
+					"body": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcclean1",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcclean1s",
+									"text": "Huolehdin kodin siisteydestä pääasiassa sinun omilla välineilläsi: keittiön pinnat, imurointi ja pölyjen pyyhkiminen, lattioiden pesu sekä kylpyhuoneen ja WC:n pesu. Sovittaessa voin tuoda mukaan biohajoavaa desinfiointiainetta. Käytän omaa työvaatetusta ja tarvittavia suojavarusteita, ja toiminnallani on voimassa oleva vastuuvakuutus."
+								}
+							]
+						}
+					],
+					"bullets": [
+						{ "text": "Perus- ja ylläpitosiivous" },
+						{ "text": "Pääasiassa omilla välineilläsi" },
+						{ "text": "Voidaan yhdistää lemmikkihoitoon" },
+						{ "text": "Myös muuttosiivoukset" }
+					]
+				}
+			},
+			{
+				"id": "svc:garden",
+				"slug": "puutarhanhoito",
+				"status": "published",
+				"data": {
+					"title": "Puutarhanhoito",
+					"summary": "Nurmikosta lumitöihin — pihasi hoidossa lomasi ajan tai tarpeen mukaan.",
+					"icon": "garden",
+					"order": 3,
+					"body": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcgarden1",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcgarden1s",
+									"text": "Hoidan pihaa ja puutarhaa lomamatkasi ajan tai muun tarpeen mukaan: nurmikon leikkuu ja trimmaus, kasvien istutus, leikkaus ja muu ylläpito, haravointi ja lumityöt sekä pienet viherrakennustyöt. Työ tehdään pääasiassa sinun omilla työvälineilläsi, ja hinnoittelu on tunti- tai urakkaperusteista tarpeen mukaan."
+								}
+							]
+						}
+					],
+					"bullets": [
+						{ "text": "Nurmikon leikkuu ja trimmaus" },
+						{ "text": "Istutukset ja kasvien ylläpito" },
+						{ "text": "Haravointi ja lumityöt" },
+						{ "text": "Tunti- tai urakkaveloitus" }
 					]
 				}
 			}
 		],
-		"posts": [
+		"testimonials": [
 			{
-				"id": "post-1",
-				"slug": "welcome",
+				"id": "test:kristiina",
+				"slug": "kristiina",
 				"status": "published",
 				"data": {
-					"title": "Welcome",
-					"excerpt": "Your first post. Replace this with your own content.",
+					"quote": "Koirat helteestä huolimatta pirteinä, ja ihanan siistiä taas, kiitos!",
+					"author": "Kristiina",
+					"service": "$ref:svc:pets",
+					"order": 1
+				}
+			},
+			{
+				"id": "test:ulla",
+				"slug": "ulla",
+				"status": "published",
+				"data": {
+					"quote": "Iso kiitos huippuhoidosta! Oli ihanaa, että kissoista pidettiin niin hyvää huolta — lääkitys ja kaikki sujui täydellisesti, ja kuvat piristivät päivää.",
+					"author": "Ulla",
+					"service": "$ref:svc:pets",
+					"order": 2
+				}
+			},
+			{
+				"id": "test:merja",
+				"slug": "merja",
+				"status": "published",
+				"data": {
+					"quote": "Tuhannet kiitokset pojan (koiran) hyvästä hoidosta jälleen!",
+					"author": "Merja",
+					"service": "$ref:svc:pets",
+					"order": 3
+				}
+			}
+		],
+		"price_groups": [
+			{
+				"id": "pg:pets",
+				"slug": "lemmikin-hoito",
+				"status": "published",
+				"data": { "label": "Lemmikin hoito", "order": 1 }
+			},
+			{
+				"id": "pg:home",
+				"slug": "kodin-siivous-ja-puutarhanhoito",
+				"status": "published",
+				"data": { "label": "Kodin siivous ja puutarhanhoito", "order": 2 }
+			}
+		],
+		"price_items": [
+			{
+				"id": "pi:hour",
+				"slug": "tunti",
+				"status": "published",
+				"data": { "label": "Tuntihinta", "amount": 18, "unit": "/ h", "group": "$ref:pg:pets", "order": 1 }
+			},
+			{
+				"id": "pi:daycare",
+				"slug": "paivahoito",
+				"status": "published",
+				"data": { "label": "Päivähoito, alle 8 h", "amount": 38, "unit": "/ pv", "group": "$ref:pg:pets", "order": 2 }
+			},
+			{
+				"id": "pi:1-3",
+				"slug": "1-3-vrk",
+				"status": "published",
+				"data": { "label": "1–3 vrk", "amount": 43, "unit": "/ pv", "group": "$ref:pg:pets", "order": 3 }
+			},
+			{
+				"id": "pi:4-6",
+				"slug": "4-6-vrk",
+				"status": "published",
+				"data": { "label": "4–6 vrk", "amount": 40, "unit": "/ pv", "group": "$ref:pg:pets", "order": 4 }
+			},
+			{
+				"id": "pi:7-10",
+				"slug": "7-10-vrk",
+				"status": "published",
+				"data": { "label": "7–10 vrk", "amount": 37, "unit": "/ pv", "group": "$ref:pg:pets", "order": 5 }
+			},
+			{
+				"id": "pi:10plus",
+				"slug": "yli-10-vrk",
+				"status": "published",
+				"data": { "label": "Yli 10 vrk", "amount": 34, "unit": "/ pv", "group": "$ref:pg:pets", "order": 6 }
+			},
+			{
+				"id": "pi:extra-pet",
+				"slug": "saman-talouden-muut-lemmikit",
+				"status": "published",
+				"data": {
+					"label": "Saman talouden muut lemmikit",
+					"amount": 25,
+					"unit": "% lisähintaan",
+					"group": "$ref:pg:pets",
+					"order": 7
+				}
+			},
+			{
+				"id": "pi:basic-clean",
+				"slug": "perus-ja-yllapitosiivous",
+				"status": "published",
+				"data": {
+					"label": "Perus- ja ylläpitosiivous",
+					"amount": 55,
+					"unit": "/ max. 2,5 h",
+					"group": "$ref:pg:home",
+					"order": 1
+				}
+			},
+			{
+				"id": "pi:move-clean",
+				"slug": "muuttosiivous",
+				"status": "published",
+				"data": { "label": "Muuttosiivous", "amount": 33, "unit": "/ h", "group": "$ref:pg:home", "order": 2 }
+			},
+			{
+				"id": "pi:garden",
+				"slug": "puutarhanhoito-hinta",
+				"status": "published",
+				"data": {
+					"label": "Puutarhanhoito",
+					"note": "Urakkakohtainen veloitus tarpeen mukaan.",
+					"group": "$ref:pg:home",
+					"order": 3
+				}
+			}
+		],
+		"pages": [
+			{
+				"id": "page:minusta",
+				"slug": "minusta",
+				"status": "published",
+				"data": {
+					"title": "Minusta",
 					"content": [
 						{
 							"_type": "block",
 							"style": "normal",
+							"_key": "minusta1",
 							"children": [
 								{
 									"_type": "span",
-									"text": "This is a starter post. The templates in this project show the basic patterns for querying and rendering EmDash content. Replace them with your own design.",
-									"_key": "k1"
+									"_key": "minusta1s",
+									"text": "Asuin lähes kymmenen vuotta Uudessa Seelannissa. Siellä toimin vapaaehtoisena eläinsuojeluyhdistys SPCA:ssa useita kertoja viikossa parin vuoden ajan, ja silloin syntyi ajatus siitä, että haluan tehdä eläinten kanssa töitä myös jatkossa — ehkä joskus jopa oman löytöeläinkodin, pienimuotoisen luomuviljelyn kera."
 								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [
-								{
-									"_type": "span",
-									"text": "What to do next",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
+							]
 						},
 						{
 							"_type": "block",
 							"style": "normal",
+							"_key": "minusta2",
 							"children": [
 								{
 									"_type": "span",
-									"text": "Open the admin panel to add content, or edit the Astro pages in src/pages to change how content is displayed.",
-									"_key": "k5"
+									"_key": "minusta2s",
+									"text": "Muutin Suomeen kesäkuussa 2023 ja opiskelin eläintenhoitajaksi. Työssäoppimisjaksoni olivat Helsingin Eläinsuojeluyhdistyksellä ja Löytöeläintalolla. Aloitin lemmikkien hoitamisen jo opintojen aikana kevytyrittäjänä, ja valmistuttuani perustin toiminimen. Rauhallinen luonteeni auttaa arimmatkin kaverit rentoutumaan, ja vuosien varrella olen hoitanut kaiken ikäisiä ja rotuisia koiria ja kissoja, kaneja, muita pikkujyrsijöitä sekä lintuja."
 								}
-							],
-							"_key": "k4"
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "minusta3",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "minusta3s",
+									"text": "Lemmikkien hoidon rinnalla autan myös kodin siivouksessa sekä pihan ja puutarhan hoidossa."
+								}
+							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["general"],
-					"tag": ["starter", "example"]
+				}
+			},
+			{
+				"id": "page:hinnasto-terms",
+				"slug": "hinnasto-ehdot",
+				"status": "published",
+				"data": {
+					"title": "Hinnaston ehdot",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms1",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms1s",
+									"text": "Ensimmäinen tutustumiskäynti on maksuton pääkaupunkiseudulla. Peruutusmaksu on 50 %, jos peruutus tehdään alle 24 tuntia ennen sovitun hoidon alkamista."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms2",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms2s",
+									"text": "Kodin- ja puutarhanhoitotyöt oikeuttavat kotitalousvähennykseen — vuonna 2026 vähennys on 35 %, omavastuu 150 €. Lue lisää verottajan sivuilta: "
+								},
+								{
+									"_type": "span",
+									"_key": "terms2link",
+									"text": "vero.fi",
+									"marks": ["link1"]
+								},
+								{ "_type": "span", "_key": "terms2end", "text": "." }
+							],
+							"markDefs": [
+								{
+									"_type": "link",
+									"_key": "link1",
+									"href": "https://www.vero.fi/henkiloasiakkaat/verokortti-ja-veroilmoitus/tulot-ja-vahennykset/kotitalousvahennys/"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms3",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms3s",
+									"text": "Toiminnallani on voimassa oleva vastuuvakuutus."
+								}
+							]
+						}
+					]
 				}
 			}
 		]

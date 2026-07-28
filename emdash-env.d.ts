@@ -5,6 +5,38 @@
 
 import type { ContentBylineCredit, TaxonomyTerm, PortableTextBlock } from "emdash";
 
+export interface BusinessInfo {
+  id: string;
+  slug: string | null;
+  status: string;
+  phone_e164: string;
+  phone_display: string;
+  email: string;
+  whatsapp_e164?: string;
+  business_id: string;
+  service_area: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface GalleryItem {
+  id: string;
+  slug: string | null;
+  status: string;
+  image: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  alt: string;
+  caption?: string;
+  order?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Page {
   id: string;
   slug: string | null;
@@ -18,14 +50,62 @@ export interface Page {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
-export interface Post {
+export interface PriceGroup {
+  id: string;
+  slug: string | null;
+  status: string;
+  label: string;
+  order?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface PriceItem {
+  id: string;
+  slug: string | null;
+  status: string;
+  label: string;
+  amount?: number;
+  unit?: string;
+  note?: string;
+  group: string;
+  order?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Service {
   id: string;
   slug: string | null;
   status: string;
   title: string;
-  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
-  content?: PortableTextBlock[];
-  excerpt?: string;
+  summary: string;
+  icon: "pets" | "cleaning" | "garden";
+  body: PortableTextBlock[];
+  bullets?: unknown;
+  image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  order?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Testimonial {
+  id: string;
+  slug: string | null;
+  status: string;
+  quote: string;
+  author: string;
+  service?: string;
+  order?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -35,7 +115,12 @@ export interface Post {
 
 declare module "emdash" {
   interface EmDashCollections {
+    business_info: BusinessInfo;
+    gallery_items: GalleryItem;
     pages: Page;
-    posts: Post;
+    price_groups: PriceGroup;
+    price_items: PriceItem;
+    services: Service;
+    testimonials: Testimonial;
   }
 }

@@ -18,7 +18,7 @@ The admin UI is at `http://localhost:4321/_emdash/admin`.
 |---|---|
 | `astro.config.mjs` | Astro config: `emdash()` integration, D1/R2, i18n block (`fi` default, `en` under `/en/`), Vite SCSS `additionalData` auto-injecting `@use "abstracts" as *;` into every component style block |
 | `src/live.config.ts` | EmDash loader registration (boilerplate — don't modify) |
-| `seed/seed.json` | Schema definition + content (collections, fields, taxonomies, menus, widgets) — Finnish entries first, English via `translationOf` (Phase 2, in progress) |
+| `seed/seed.json` | Schema definition + content (collections, fields, menus). Finnish entries only so far — English via `translationOf` lands in Phase 6. `gallery_items` collection exists but is deliberately unseeded: needs the client's photo-use permission first (see `docs/media-credits.md`). |
 | `emdash-env.d.ts` | Generated types for collections (auto-regenerated on dev server start — don't hand-edit) |
 | `src/layouts/BaseLayout.astro` | `<html lang>`, head/meta/hreflang, skip link, `SiteHeader`, `<main id="main">`, `SiteFooter`, EmDash page-contribution slots |
 | `src/layouts/PageLayout.astro` | `BaseLayout` + page-header pattern (H1 + optional intro) |
@@ -58,7 +58,11 @@ The EmDash docs are available as an MCP server at `https://docs.emdashcms.com/mc
 
 ## This project's content model
 
-Not the generic starter's blog schema — see [PLAN.md §4](PLAN.md) for the target: `services`, `testimonials`, `price_groups`/`price_items`, `pages` (prose), `gallery_items` collections, plus a business-info singleton for contact details. The starter's `posts`/`category`/`tag` routes and schema are scaffold leftovers, not part of this site's IA (see PLAN.md §3) — they get removed once the real content model and pages land (Phase 2/4).
+Not the generic starter's blog schema — built per [PLAN.md §4](PLAN.md): `services`, `testimonials`, `price_groups` + `price_items` (linked by a `reference` field), `pages` (prose fragments — currently `minusta` and `hinnasto-ehdot`, embedded into dedicated routes by id, not generically slug-routed), `gallery_items`, and `business_info` (a one-entry collection — EmDash has no dedicated singleton type, "one entry by convention" is the pattern). The starter's `posts`/`category`/`tag` collections and routes, and the generic `[slug].astro` catch-all, have been removed — they weren't part of this site's IA.
+
+Seed reference fields use the seed-local `"$ref:id"` syntax (e.g. `"service": "$ref:svc:pets"`) resolved at apply time — confirmed working by inspecting a seeded testimonial in the admin (resolves to the correct service ULID). Note: the admin renders `reference` fields as a raw ID text input by default, not a picker — cosmetic, data is correct; revisit if a nicer editing widget matters to the client.
+
+`repeater` fields (e.g. `services.bullets`) need `validation.subFields` (not `options.fields`) — each sub-field is `{slug, type, label, required?}`, limited to `string | text | url | number | integer | boolean | datetime | select | image` (no nesting, no portableText/reference inside a repeater item).
 
 ## Visual character
 
