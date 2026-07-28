@@ -1,6 +1,7 @@
 node_modules
 dist
 .astro
+.wrangler
 uploads
 data.db
 
@@ -10,3 +11,4 @@ data.db
 !.env.example
 .dev.vars
 .dev.vars.*
+content-source/
