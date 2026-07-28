@@ -114,3 +114,4 @@ No inline `style="…"` attributes, no Tailwind, no `!important`. Component styl
 - **Contact form email delivery** hasn't been confirmed end-to-end — submissions confirmed landing in the admin, but whether the notification email actually reaches `minna.petsitter@gmail.com` needs a live check (see [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms)).
 - **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
 - **Gallery photos**: `gallery_items` is seeded empty — needs the client's go-ahead on which personal pet photos can be published (see `docs/media-credits.md`).
+- **English content**: real translations throughout (not machine-translated placeholders), but nobody's proofread them against the client's actual voice — a native-speaker pass before launch would be worthwhile.

@@ -1,0 +1,72 @@
+{
+	"name": "Contact form",
+	"slug": "contact",
+	"pages": [
+		{
+			"fields": [
+				{
+					"id": "f-name",
+					"type": "text",
+					"label": "Name",
+					"name": "name",
+					"required": true,
+					"width": "full"
+				},
+				{
+					"id": "f-email",
+					"type": "email",
+					"label": "Email",
+					"name": "email",
+					"required": true,
+					"width": "half"
+				},
+				{
+					"id": "f-phone",
+					"type": "tel",
+					"label": "Phone (optional)",
+					"name": "phone",
+					"required": false,
+					"width": "half"
+				},
+				{
+					"id": "f-service",
+					"type": "select",
+					"label": "Service",
+					"name": "service",
+					"required": true,
+					"width": "full",
+					"options": [
+						{ "label": "Pet care", "value": "pets" },
+						{ "label": "Home cleaning", "value": "cleaning" },
+						{ "label": "Garden care", "value": "garden" },
+						{ "label": "A combination", "value": "combination" }
+					]
+				},
+				{
+					"id": "f-message",
+					"type": "textarea",
+					"label": "Message",
+					"name": "message",
+					"required": true,
+					"width": "full"
+				},
+				{
+					"id": "f-consent",
+					"type": "checkbox",
+					"label": "I agree to my details being processed per the privacy statement",
+					"name": "consent",
+					"required": true,
+					"width": "full"
+				}
+			]
+		}
+	],
+	"settings": {
+		"confirmationMessage": "Thanks for your message! I usually reply within a day. For urgent matters, feel free to call or send a WhatsApp message.",
+		"notifyEmails": ["minna.petsitter@gmail.com"],
+		"digestEnabled": false,
+		"spamProtection": "honeypot",
+		"submitLabel": "Send message",
+		"retentionDays": 0
+	}
+}

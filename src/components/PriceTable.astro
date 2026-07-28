@@ -10,6 +10,7 @@ interface Props {
 const { locale } = Astro.props;
 
 const { entries: groups, cacheHint: groupsCacheHint } = await getEmDashCollection("price_groups", {
+	locale,
 	orderBy: { order: "asc" },
 });
 if (Astro.cache?.enabled) Astro.cache.set(groupsCacheHint);
@@ -17,6 +18,7 @@ if (Astro.cache?.enabled) Astro.cache.set(groupsCacheHint);
 const groupsWithItems = await Promise.all(
 	groups.map(async (group) => {
 		const { entries: items, cacheHint } = await getEmDashCollection("price_items", {
+			locale,
 			where: { group: group.data.id },
 			orderBy: { order: "asc" },
 		});

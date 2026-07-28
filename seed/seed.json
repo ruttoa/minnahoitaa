@@ -128,6 +128,7 @@
 	],
 	"menus": [
 		{
+			"id": "menu:primary:fi",
 			"name": "primary",
 			"label": "Päävalikko",
 			"locale": "fi",
@@ -140,6 +141,7 @@
 			]
 		},
 		{
+			"id": "menu:footer:fi",
 			"name": "footer",
 			"label": "Alatunnisteen valikko",
 			"locale": "fi",
@@ -148,6 +150,33 @@
 				{ "type": "custom", "label": "Hinnasto", "url": "/hinnasto" },
 				{ "type": "custom", "label": "Kuvagalleria", "url": "/galleria" },
 				{ "type": "custom", "label": "Ota yhteyttä", "url": "/ota-yhteytta" }
+			]
+		},
+		{
+			"id": "menu:primary:en",
+			"name": "primary",
+			"label": "Main menu",
+			"locale": "en",
+			"translationOf": "menu:primary:fi",
+			"items": [
+				{ "type": "custom", "label": "Home", "url": "/en/" },
+				{ "type": "custom", "label": "Services", "url": "/en/palvelut" },
+				{ "type": "custom", "label": "Pricing", "url": "/en/hinnasto" },
+				{ "type": "custom", "label": "Photo gallery", "url": "/en/galleria" },
+				{ "type": "custom", "label": "Get in touch", "url": "/en/ota-yhteytta" }
+			]
+		},
+		{
+			"id": "menu:footer:en",
+			"name": "footer",
+			"label": "Footer menu",
+			"locale": "en",
+			"translationOf": "menu:footer:fi",
+			"items": [
+				{ "type": "custom", "label": "Services", "url": "/en/palvelut" },
+				{ "type": "custom", "label": "Pricing", "url": "/en/hinnasto" },
+				{ "type": "custom", "label": "Photo gallery", "url": "/en/galleria" },
+				{ "type": "custom", "label": "Get in touch", "url": "/en/ota-yhteytta" }
 			]
 		}
 	],
@@ -172,6 +201,21 @@
 					"whatsapp_e164": "+3584578314323",
 					"business_id": "3481889-8",
 					"service_area": "Pääkaupunkiseutu (HSL-vyöhykkeet A–C maksuttomalle tutustumiskäynnille); pidempi hoitojakso mahdollistaa matkan kauemmaksikin."
+				}
+			},
+			{
+				"id": "biz:main:en",
+				"slug": "main",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "biz:main",
+				"data": {
+					"phone_e164": "+3584578314323",
+					"phone_display": "045 783 14323",
+					"email": "minna.petsitter@gmail.com",
+					"whatsapp_e164": "+3584578314323",
+					"business_id": "3481889-8",
+					"service_area": "Helsinki capital region (HSL zones A–C for the free introductory visit); a longer booking makes travelling further afield possible too."
 				}
 			}
 		],
@@ -280,6 +324,117 @@
 						{ "text": "Tunti- tai urakkaveloitus" }
 					]
 				}
+			},
+			{
+				"id": "svc:pets:en",
+				"slug": "pet-care",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "svc:pets",
+				"data": {
+					"title": "Pet care",
+					"summary": "I look after your dog, cat or other pet in your own home or mine — one household at a time, always by agreement.",
+					"icon": "pets",
+					"order": 1,
+					"body": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcpets1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcpets1ens",
+									"text": "I care for dogs, cats and most small pets across the Helsinki capital region — longer trips further afield are possible too, if the booking is long enough. Care usually happens in the pet's own home: during 24-hour care I'm there the whole time, or as we agree. I take in pets from one household at a time in my own home — one to two cats, or one medium-sized dog at most. My home is a lift-access flat in West Vantaa, right next to the Lammaslampi recreation area."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcpets2en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcpets2ens",
+									"text": "We always sign a written care agreement, and the first introductory visit is free within HSL zones A–C. The price includes individual feeding and water changes, play and cuddles on the pet's own terms, individual walks, litter tray cleaning, and small household tasks during the stay. You'll get photo and video updates, and I can also handle medication and other routine care when needed. My liability insurance is in force."
+								}
+							]
+						}
+					],
+					"bullets": [
+						{ "text": "Care in the pet's own home or mine" },
+						{ "text": "Only one household's pets at a time" },
+						{ "text": "Medication and individual care available" },
+						{ "text": "Free introductory visit in the capital region" }
+					]
+				}
+			},
+			{
+				"id": "svc:cleaning:en",
+				"slug": "home-cleaning",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "svc:cleaning",
+				"data": {
+					"title": "Home cleaning",
+					"summary": "Basic and upkeep home cleaning — on its own, or alongside a pet-care booking.",
+					"icon": "cleaning",
+					"order": 2,
+					"body": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcclean1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcclean1ens",
+									"text": "I take care of your home's cleanliness mainly with your own equipment: kitchen surfaces, vacuuming and dusting, floor washing, and bathroom and toilet cleaning. By agreement I can bring biodegradable disinfectant. I use my own work clothing and protective gear, and my liability insurance is in force."
+								}
+							]
+						}
+					],
+					"bullets": [
+						{ "text": "Basic and upkeep cleaning" },
+						{ "text": "Mainly with your own equipment" },
+						{ "text": "Can be combined with pet care" },
+						{ "text": "Move-out cleaning also available" }
+					]
+				}
+			},
+			{
+				"id": "svc:garden:en",
+				"slug": "garden-care",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "svc:garden",
+				"data": {
+					"title": "Garden care",
+					"summary": "From lawns to snow clearing — your garden looked after while you're away or whenever you need it.",
+					"icon": "garden",
+					"order": 3,
+					"body": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "svcgarden1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "svcgarden1ens",
+									"text": "I look after your yard and garden while you're on holiday or as needed: lawn mowing and trimming, planting, pruning and general upkeep, raking and snow clearing, and small landscaping jobs. Work is done mainly with your own tools, priced hourly or per job depending on the work."
+								}
+							]
+						}
+					],
+					"bullets": [
+						{ "text": "Lawn mowing and trimming" },
+						{ "text": "Planting and plant upkeep" },
+						{ "text": "Raking and snow clearing" },
+						{ "text": "Hourly or per-job pricing" }
+					]
+				}
 			}
 		],
 		"testimonials": [
@@ -315,6 +470,45 @@
 					"service": "$ref:svc:pets",
 					"order": 3
 				}
+			},
+			{
+				"id": "test:kristiina:en",
+				"slug": "kristiina",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "test:kristiina",
+				"data": {
+					"quote": "The dogs stayed lively despite the heat, and the place was spotlessly clean again — thank you!",
+					"author": "Kristiina",
+					"service": "$ref:svc:pets:en",
+					"order": 1
+				}
+			},
+			{
+				"id": "test:ulla:en",
+				"slug": "ulla",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "test:ulla",
+				"data": {
+					"quote": "A huge thank you for the excellent care! It was wonderful how well the cats were looked after — medication and everything went perfectly, and the photos brightened my day.",
+					"author": "Ulla",
+					"service": "$ref:svc:pets:en",
+					"order": 2
+				}
+			},
+			{
+				"id": "test:merja:en",
+				"slug": "merja",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "test:merja",
+				"data": {
+					"quote": "A thousand thanks for taking such good care of my boy (the dog) again!",
+					"author": "Merja",
+					"service": "$ref:svc:pets:en",
+					"order": 3
+				}
 			}
 		],
 		"price_groups": [
@@ -329,6 +523,22 @@
 				"slug": "kodin-siivous-ja-puutarhanhoito",
 				"status": "published",
 				"data": { "label": "Kodin siivous ja puutarhanhoito", "order": 2 }
+			},
+			{
+				"id": "pg:pets:en",
+				"slug": "pet-care",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pg:pets",
+				"data": { "label": "Pet care", "order": 1 }
+			},
+			{
+				"id": "pg:home:en",
+				"slug": "home-cleaning-and-garden-care",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pg:home",
+				"data": { "label": "Home cleaning and garden care", "order": 2 }
 			}
 		],
 		"price_items": [
@@ -406,6 +616,109 @@
 					"label": "Puutarhanhoito",
 					"note": "Urakkakohtainen veloitus tarpeen mukaan.",
 					"group": "$ref:pg:home",
+					"order": 3
+				}
+			},
+			{
+				"id": "pi:hour:en",
+				"slug": "hourly-rate",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:hour",
+				"data": { "label": "Hourly rate", "amount": 18, "unit": "/ h", "group": "$ref:pg:pets:en", "order": 1 }
+			},
+			{
+				"id": "pi:daycare:en",
+				"slug": "day-care",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:daycare",
+				"data": {
+					"label": "Day care, under 8 h",
+					"amount": 38,
+					"unit": "/ day",
+					"group": "$ref:pg:pets:en",
+					"order": 2
+				}
+			},
+			{
+				"id": "pi:1-3:en",
+				"slug": "1-3-days",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:1-3",
+				"data": { "label": "1–3 days", "amount": 43, "unit": "/ day", "group": "$ref:pg:pets:en", "order": 3 }
+			},
+			{
+				"id": "pi:4-6:en",
+				"slug": "4-6-days",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:4-6",
+				"data": { "label": "4–6 days", "amount": 40, "unit": "/ day", "group": "$ref:pg:pets:en", "order": 4 }
+			},
+			{
+				"id": "pi:7-10:en",
+				"slug": "7-10-days",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:7-10",
+				"data": { "label": "7–10 days", "amount": 37, "unit": "/ day", "group": "$ref:pg:pets:en", "order": 5 }
+			},
+			{
+				"id": "pi:10plus:en",
+				"slug": "over-10-days",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:10plus",
+				"data": { "label": "Over 10 days", "amount": 34, "unit": "/ day", "group": "$ref:pg:pets:en", "order": 6 }
+			},
+			{
+				"id": "pi:extra-pet:en",
+				"slug": "additional-pets-same-household",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:extra-pet",
+				"data": {
+					"label": "Additional pets from the same household",
+					"amount": 25,
+					"unit": "% surcharge",
+					"group": "$ref:pg:pets:en",
+					"order": 7
+				}
+			},
+			{
+				"id": "pi:basic-clean:en",
+				"slug": "basic-and-upkeep-cleaning",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:basic-clean",
+				"data": {
+					"label": "Basic and upkeep cleaning",
+					"amount": 55,
+					"unit": "/ max. 2.5 h",
+					"group": "$ref:pg:home:en",
+					"order": 1
+				}
+			},
+			{
+				"id": "pi:move-clean:en",
+				"slug": "move-out-cleaning",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:move-clean",
+				"data": { "label": "Move-out cleaning", "amount": 33, "unit": "/ h", "group": "$ref:pg:home:en", "order": 2 }
+			},
+			{
+				"id": "pi:garden:en",
+				"slug": "garden-care-price",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "pi:garden",
+				"data": {
+					"label": "Garden care",
+					"note": "Priced per job, as needed.",
+					"group": "$ref:pg:home:en",
 					"order": 3
 				}
 			}
@@ -645,6 +958,254 @@
 									"_type": "span",
 									"_key": "terms3s",
 									"text": "Toiminnallani on voimassa oleva vastuuvakuutus."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page:koti-hero:en",
+				"slug": "koti-hero",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "page:koti-hero",
+				"data": {
+					"title": "Someone is home",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "herointro1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "herointro1ens",
+									"text": "When you go away, your home and your pet are in good hands. I look after pets, clean homes, and take care of gardens in West Vantaa and across the Helsinki capital region."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page:minusta:en",
+				"slug": "about-me",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "page:minusta",
+				"data": {
+					"title": "About me",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "minusta1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "minusta1ens",
+									"text": "I lived in New Zealand for almost ten years. There I volunteered with the animal welfare society SPCA several times a week for a couple of years, and that's where the idea took hold: I wanted to keep working with animals going forward — maybe even, one day, run my own animal shelter alongside some small-scale organic farming."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "minusta2en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "minusta2ens",
+									"text": "I moved to Finland in June 2023 and trained as an animal caretaker. My work placements were with the Helsinki Animal Welfare Society and Löytöeläintalo. I started pet-sitting as a light entrepreneur during my studies, and set up my own business once I qualified. My calm nature helps even the shyest of pets relax, and over the years I've cared for dogs and cats of every age and breed, rabbits, other small rodents, and birds."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "minusta3en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "minusta3ens",
+									"text": "Alongside pet care, I also help with home cleaning and garden and yard maintenance."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page:hinnasto-terms:en",
+				"slug": "pricing-terms",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "page:hinnasto-terms",
+				"data": {
+					"title": "Pricing terms",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms1ens",
+									"text": "The first introductory visit is free within the capital region. A cancellation fee of 50% applies if cancelled less than 24 hours before the booked care is due to start."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms2en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms2ens",
+									"text": "Home and garden work qualifies for the household tax deduction (kotitalousvähennys) — in 2026 the deduction is 35%, with a €150 deductible. Read more on the Finnish Tax Administration's website: "
+								},
+								{
+									"_type": "span",
+									"_key": "terms2linken",
+									"text": "vero.fi",
+									"marks": ["link1en"]
+								},
+								{ "_type": "span", "_key": "terms2enden", "text": "." }
+							],
+							"markDefs": [
+								{
+									"_type": "link",
+									"_key": "link1en",
+									"href": "https://www.vero.fi/en/individuals/tax-cards-and-tax-returns/income-and-deductions/household-expenses/"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "terms3en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "terms3ens",
+									"text": "My liability insurance is in force."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "page:tietosuoja:en",
+				"slug": "tietosuoja",
+				"status": "published",
+				"locale": "en",
+				"translationOf": "page:tietosuoja",
+				"data": {
+					"title": "Privacy statement",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-noteen",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-note-sen",
+									"text": "This is a draft and has not yet been reviewed by a legal professional. Review the content before the site goes live."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h1en",
+							"children": [{ "_type": "span", "_key": "ts-h1sen", "text": "Data controller" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p1en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p1sen",
+									"text": "Minna Rättyä (sole trader, Business ID 3481889-8). Contact for privacy matters: minna.petsitter@gmail.com."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h2en",
+							"children": [{ "_type": "span", "_key": "ts-h2sen", "text": "What data is collected" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p2en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p2sen",
+									"text": "Via the contact form: name, email address, phone number if provided, selected service, and message content. No other data is collected while browsing the site."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h3en",
+							"children": [{ "_type": "span", "_key": "ts-h3sen", "text": "Purpose of use" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p3en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p3sen",
+									"text": "Data is used only to respond to enquiries and to provide the requested service. Data is not used for marketing without separate consent, and is not shared with third parties other than the site's technical service providers (Cloudflare, the site's hosting and database service)."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h4en",
+							"children": [{ "_type": "span", "_key": "ts-h4sen", "text": "Retention period" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p4en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p4sen",
+									"text": "Enquiries are kept indefinitely, until manually deleted."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"_key": "ts-h5en",
+							"children": [{ "_type": "span", "_key": "ts-h5sen", "text": "Your rights" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"_key": "ts-p5en",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "ts-p5sen",
+									"text": "You have the right to access, correct, and request deletion of data held about you. Contact the email address above. You also have the right to lodge a complaint with the Office of the Data Protection Ombudsman."
 								}
 							]
 						}

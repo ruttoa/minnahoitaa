@@ -46,9 +46,9 @@ const pageCtx = createPublicPageContext({
 const currentPath = Astro.url.pathname;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 
-const { entries: businessInfoEntries } = await getEmDashCollection("business_info", { limit: 1 });
+const { entries: businessInfoEntries } = await getEmDashCollection("business_info", { locale, limit: 1 });
 const info = businessInfoEntries[0]?.data;
-const { entries: servicesForLd } = await getEmDashCollection("services", { orderBy: { order: "asc" } });
+const { entries: servicesForLd } = await getEmDashCollection("services", { locale, orderBy: { order: "asc" } });
 
 const localBusinessLd = {
 	"@context": "https://schema.org",

@@ -10,6 +10,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 const { entries: items, cacheHint } = await getEmDashCollection("gallery_items", {
+	locale,
 	orderBy: { order: "asc" },
 });
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
