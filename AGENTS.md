@@ -1,96 +1,65 @@
-This is an EmDash site -- a CMS built on Astro with a full admin UI.
+This is an EmDash site — a CMS built on Astro with a full admin UI — for **Minna hoitaa**, a pet care / home cleaning / garden maintenance business. Build plan and content spec: [PLAN.md](PLAN.md). Progress against the plan's phases is tracked in the session's task list, not in this file.
 
 ## Commands
 
 ```bash
-npx emdash dev        # Start dev server (runs migrations, seeds, generates types)
+pnpm dev              # Start dev server (runs migrations, seeds, generates types) + EmDash admin
 npx emdash types      # Regenerate TypeScript types from schema
+pnpm approve-builds --all   # Needed once after install (parcel/watcher build script)
 ```
 
 The admin UI is at `http://localhost:4321/_emdash/admin`.
 
-## Key Files
+**Node caveat:** EmDash's docs state odd-numbered Node majors are unsupported. If the environment's global Node is odd (currently v25 here), use the pinned Node 22 install instead — see [README.md](README.md#prerequisites) for the exact PATH prefix.
 
-| File                     | Purpose                                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, database, and storage                    |
-| `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
-| `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
-| `emdash-env.d.ts`        | Generated types for collections (auto-regenerated on dev server start)             |
-| `src/layouts/Base.astro` | Base layout with EmDash wiring (menus, search, page contributions)                 |
-| `src/pages/`             | Astro pages -- all server-rendered                                                 |
+## Key files
+
+| File | Purpose |
+|---|---|
+| `astro.config.mjs` | Astro config: `emdash()` integration, D1/R2, i18n block (`fi` default, `en` under `/en/`), Vite SCSS `additionalData` auto-injecting `@use "abstracts" as *;` into every component style block |
+| `src/live.config.ts` | EmDash loader registration (boilerplate — don't modify) |
+| `seed/seed.json` | Schema definition + content (collections, fields, taxonomies, menus, widgets) — Finnish entries first, English via `translationOf` (Phase 2, in progress) |
+| `emdash-env.d.ts` | Generated types for collections (auto-regenerated on dev server start — don't hand-edit) |
+| `src/layouts/BaseLayout.astro` | `<html lang>`, head/meta/hreflang, skip link, `SiteHeader`, `<main id="main">`, `SiteFooter`, EmDash page-contribution slots |
+| `src/layouts/PageLayout.astro` | `BaseLayout` + page-header pattern (H1 + optional intro) |
+| `src/i18n/ui.ts` + `fi.json`/`en.json` | Typed `t()` helper for every non-CMS user-visible string. **Zero bare Finnish string literals in `.astro` templates** — this is a hard rule, checked in Phase 8 QA. |
+| `src/lib/routes.ts` | `CONTACT_PATH` — every CTA on the site resolves through this constant. Never hardcode `/ota-yhteytta/` elsewhere. |
+| `src/styles/` | `abstracts/` (tokens/mixins/breakpoints), `base/` (reset/typography/a11y/forms), `layout/` (`.l-container`/`.l-grid`/`.l-section` — section spacing owned only by `_l-section.scss`) |
+| `src/pages/` | Astro pages — all server-rendered, fi at root, en under `/en/` |
 
 ## Skills
 
 Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
 
-- **building-emdash-site** -- Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
-- **creating-plugins** -- Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
-- **emdash-cli** -- CLI commands for content management, seeding, type generation, and visual editing flow.
+- **building-emdash-site** — Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
+- **creating-plugins** — Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
+- **emdash-cli** — CLI commands for content management, seeding, type generation, and visual editing flow.
 
 ## Documentation
 
-The EmDash docs are available as an MCP server at `https://docs.emdashcms.com/mcp`. When you need to verify an API, hook, config option, field type, or pattern, call `search_docs` against the live documentation rather than relying on training-data recall. The docs reflect current behaviour; assumptions may not.
-
-This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json` so Claude Code, Cursor, and VS Code auto-discover the docs server. Other tools (OpenCode, Windsurf, etc.) need a manual one-time setup -- see [docs.emdashcms.com/docs-mcp](https://docs.emdashcms.com/docs-mcp).
+The EmDash docs are available as an MCP server at `https://docs.emdashcms.com/mcp`. When you need to verify an API, hook, config option, field type, or pattern, check the live documentation rather than relying on training-data recall (EmDash is beta, launched April 2026, and the API moves). This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json` so Claude Code, Cursor, and VS Code auto-discover the docs server.
 
 ## Rules
 
+**EmDash-specific:**
 - All content pages must be server-rendered (`output: "server"`). No `getStaticPaths()` for CMS content.
 - Image fields are objects (`{ src, alt }`), not strings. Use `<Image image={...} />` from `"emdash/ui"`.
 - `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
 - Always call `Astro.cache.set(cacheHint)` on pages that query content.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+- Content is Portable Text (structured JSON) — render with `<PortableText>`, never `set:html`.
+- `getSiteSettings()`'s built-in schema is fixed (`title`, `tagline`, `logo`, `favicon`, `url`, `postsPerPage`, `dateFormat`, `timezone`, `social`, `seo`) — it cannot be extended with custom fields. Business data the plan calls "site settings" (phone, email, WhatsApp, Y-tunnus, service area) needs its own singleton collection instead; `social.facebook` does cover the Facebook URL.
 
-## This Template
+**Project-specific (see PLAN.md for full rationale):**
+- No inline `style="…"` attributes anywhere. No Tailwind. No `!important`.
+- BEM everywhere in component markup and SCSS (`.service-card`, `.service-card__icon`, `.service-card--pets`).
+- Every CTA resolves to `CONTACT_PATH` from `src/lib/routes.ts` — never a hardcoded path.
+- Progressive enhancement only: the site must be fully readable/navigable with JS disabled.
 
-A general-purpose starting point with posts, pages, categories, and tags. Less opinionated than the themed templates -- a base for sites that want to define their own design.
+## This project's content model
 
-There is intentionally no `theme.css`, no custom font configuration, no styled layouts beyond browser defaults. The home, posts index, post detail, page, category, and tag pages all render with minimal styling. Start here if you want full control over the visual language; start with `blog`, `portfolio`, or `marketing` if you want a designed template to customise.
-
-## Pages
-
-| Page        | Path               | What it shows                                  |
-| ----------- | ------------------ | ---------------------------------------------- |
-| Home        | `/`                | Site title + tagline, links into Posts / About |
-| All posts   | `/posts`           | Post list                                      |
-| Post detail | `/posts/[slug]`    | Post content                                   |
-| Page        | `/[slug]`          | Static page content (e.g. `/about`)            |
-| Category    | `/category/[slug]` | Posts filtered by category                     |
-| Tag         | `/tag/[slug]`      | Posts filtered by tag                          |
-
-## Schema
-
-- `posts` collection: `title`, `featured_image`, `content` (Portable Text), `excerpt` (text).
-- `pages` collection: `title`, `content` (Portable Text).
-- Taxonomies: `category`, `tag`.
-- Single `primary` menu.
-
-Site settings have `title` and `tagline`.
+Not the generic starter's blog schema — see [PLAN.md §4](PLAN.md) for the target: `services`, `testimonials`, `price_groups`/`price_items`, `pages` (prose), `gallery_items` collections, plus a business-info singleton for contact details. The starter's `posts`/`category`/`tag` routes and schema are scaffold leftovers, not part of this site's IA (see PLAN.md §3) — they get removed once the real content model and pages land (Phase 2/4).
 
 ## Visual character
 
-None imposed. Define your own.
-
-This template ships without:
-
-- `src/styles/theme.css` -- create one and import it from `Base.astro` if you want CSS-variable theming.
-- Fonts in `astro.config.mjs` -- the `fonts:` array is empty. Add Google Fonts entries with `cssVariable` bindings if you want web fonts.
-- A `components/` directory with styled cards / tag lists / etc. -- build them as needed.
-
-## What to do here
-
-If you're customising this template, the work is to add design, not to subtract it. Reasonable first moves:
-
-1. Decide on one display + one body typeface, add them to `astro.config.mjs`, bind them to `--font-display` and `--font-body` CSS variables.
-2. Create `src/styles/theme.css` with your colour palette, type scale, and spacing tokens.
-3. Add it to `Base.astro` -- the layout already imports a small reset; add your theme above your page styles.
-4. Build page-specific styles in each Astro page's `<style>` block, referencing the CSS variables.
-
-If you want a designed template instead, switch to `blog`, `portfolio`, or `marketing` -- each ships with a full visual system you can re-skin via `theme.css`.
-
-## What not to do
-
-- Don't treat this as a finished design. The unstyled output is intentional; shipping it as-is looks unfinished because it is.
-- Don't add component libraries (Tailwind UI, shadcn, etc.) without considering what they bring with them. The template is small on purpose.
-- Don't recreate the blog template's three-column reading view here. If that's what you want, start from `blog`.
+Defined — see [docs/design-tokens.md](docs/design-tokens.md) and `src/styles/abstracts/_tokens.scss`. A Nordic winter-dusk palette (not cream/serif/terracotta), Bricolage Grotesque (display) + Atkinson Hyperlegible Next (body), fluid type scale, one CSS-only "lamp glow" signature element. Don't introduce new colours, type sizes, or spacing values outside the token set — extend the tokens instead.

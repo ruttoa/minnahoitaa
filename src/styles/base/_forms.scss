@@ -1,0 +1,54 @@
+@use "../abstracts" as *;
+
+label {
+	display: block;
+	font-weight: 600;
+	font-size: var(--fs-300);
+	margin-bottom: var(--s-1);
+}
+
+input,
+textarea,
+select {
+	display: block;
+	width: 100%;
+	min-height: 44px;
+	padding: var(--s-3) var(--s-4);
+	background: var(--c-white);
+	border: 1px solid var(--c-border);
+	border-radius: var(--s-1);
+	font-size: var(--fs-400);
+
+	&:focus-visible {
+		@include focus-ring;
+	}
+
+	&[aria-invalid="true"] {
+		border-color: var(--c-error);
+	}
+}
+
+textarea {
+	min-height: 8rem;
+	resize: vertical;
+}
+
+.form-hint {
+	font-size: var(--fs-300);
+	color: var(--c-text-muted);
+	margin-top: var(--s-1);
+}
+
+.form-error {
+	font-size: var(--fs-300);
+	color: var(--c-error);
+	margin-top: var(--s-1);
+}
+
+.form-field {
+	margin-bottom: var(--s-6);
+}
+
+.form-honeypot {
+	@include visually-hidden;
+}

@@ -1,0 +1,28 @@
+@use "../abstracts" as *;
+
+// Section-level vertical rhythm lives here ONLY — see PLAN.md §5.5
+// (a common source of cancelled-out padding when it's duplicated at the
+// component level too).
+.l-section {
+	padding-block: var(--s-11);
+
+	@include respond(lg) {
+		padding-block: var(--s-12);
+	}
+
+	&--dark {
+		background: var(--c-surface-dark);
+		color: var(--c-text-on-dark);
+
+		h1,
+		h2,
+		h3,
+		h4 {
+			color: var(--c-text-on-dark);
+		}
+	}
+
+	&--tight {
+		padding-block: var(--s-9);
+	}
+}

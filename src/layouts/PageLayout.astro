@@ -1,0 +1,35 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+	title: string;
+	heading: string;
+	intro?: string | null;
+	description?: string | null;
+	image?: string | null;
+	canonical?: string | null;
+	content?: { collection: string; id: string; slug?: string | null };
+}
+
+const { title, heading, intro, description, image, canonical, content } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={image} canonical={canonical} content={content}>
+	<div class="l-container page-header">
+		<h1>{heading}</h1>
+		{intro && <p class="page-header__intro">{intro}</p>}
+	</div>
+	<slot />
+</BaseLayout>
+
+<style lang="scss">
+	.page-header {
+		padding-block: var(--s-9) var(--s-7);
+
+		&__intro {
+			font-size: var(--fs-500);
+			color: var(--c-text-muted);
+			margin-top: var(--s-3);
+		}
+	}
+</style>

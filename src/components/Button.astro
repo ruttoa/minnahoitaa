@@ -1,0 +1,79 @@
+---
+interface Props {
+	href?: string;
+	type?: "button" | "submit" | "reset";
+	variant?: "primary" | "accent" | "outline";
+	class?: string;
+	ariaLabel?: string;
+}
+
+const { href, type = "button", variant = "primary", class: className, ariaLabel } = Astro.props;
+
+const classes = ["btn", `btn--${variant}`, className].filter(Boolean).join(" ");
+
+const Tag = href ? "a" : "button";
+---
+
+<Tag
+	class={classes}
+	href={href}
+	type={href ? undefined : type}
+	aria-label={ariaLabel}
+>
+	<slot />
+</Tag>
+
+<style lang="scss">
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--s-2);
+		min-height: 44px;
+		padding: var(--s-3) var(--s-6);
+		border-radius: var(--s-1);
+		border: 1px solid transparent;
+		font-family: var(--font-body);
+		font-weight: 700;
+		font-size: var(--fs-400);
+		text-decoration: none;
+		cursor: pointer;
+		transition:
+			background-color var(--dur-fast) var(--ease-standard),
+			color var(--dur-fast) var(--ease-standard),
+			border-color var(--dur-fast) var(--ease-standard);
+
+		&:focus-visible {
+			@include focus-ring;
+		}
+
+		&--primary {
+			background: var(--c-spruce-600);
+			color: var(--c-text-on-dark);
+
+			&:hover {
+				background: var(--c-spruce-900);
+			}
+		}
+
+		&--accent {
+			background: var(--c-lamp-500);
+			color: var(--c-spruce-900);
+
+			&:hover {
+				background: color-mix(in srgb, var(--c-lamp-500) 85%, black);
+			}
+		}
+
+		&--outline {
+			background: transparent;
+			border-color: currentColor;
+			color: var(--c-spruce-600);
+
+			&:hover {
+				background: var(--c-spruce-600);
+				color: var(--c-text-on-dark);
+			}
+		}
+	}
+</style>

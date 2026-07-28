@@ -1,0 +1,106 @@
+---
+import { getMenu, getSiteSettings } from "emdash";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Button from "./Button.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import { CONTACT_PATH } from "../lib/routes";
+import { useTranslations, type Locale } from "../i18n/ui";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+
+interface Props {
+	locale: Locale;
+	currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const t = useTranslations(locale);
+const menu = await getMenu("primary", { locale });
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const homeHref = getRelativeLocaleUrl(locale, "/");
+const contactHref = getRelativeLocaleUrl(locale, CONTACT_PATH);
+---
+
+<header class="site-header">
+	<div class="l-container site-header__inner">
+		<a href={homeHref} class="site-header__logo">{siteTitle}</a>
+
+		<nav class="site-header__nav" aria-label={t("nav.primaryLabel")}>
+			<ul class="site-header__menu">
+				{
+					menu?.items.map((item) => (
+						<li>
+							<a
+								href={item.url}
+								target={item.target}
+								aria-current={currentPath === item.url ? "page" : undefined}
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="site-header__actions">
+			<LanguageSwitcher locale={locale} currentPath={currentPath} />
+			<Button href={contactHref} variant="accent" ariaLabel={t("cta.contactAria")}>
+				{t("cta.contact")}
+			</Button>
+		</div>
+	</div>
+</header>
+
+<style lang="scss">
+	.site-header {
+		background: var(--c-surface);
+		border-bottom: 1px solid var(--c-border);
+
+		&__inner {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: var(--s-5);
+			padding-block: var(--s-4);
+		}
+
+		&__logo {
+			font-family: var(--font-display);
+			font-weight: 700;
+			font-size: var(--fs-500);
+			text-decoration: none;
+			color: var(--c-spruce-600);
+		}
+
+		&__nav {
+			display: none;
+
+			@include respond(lg) {
+				display: block;
+			}
+		}
+
+		&__menu {
+			display: flex;
+			gap: var(--s-6);
+
+			a {
+				text-decoration: none;
+				font-weight: 600;
+				color: var(--c-text);
+
+				&[aria-current="page"] {
+					color: var(--c-spruce-600);
+					text-decoration: underline;
+					text-underline-offset: 0.25em;
+				}
+			}
+		}
+
+		&__actions {
+			display: flex;
+			align-items: center;
+			gap: var(--s-4);
+		}
+	}
+</style>

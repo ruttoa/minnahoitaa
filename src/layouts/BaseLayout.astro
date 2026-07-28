@@ -1,0 +1,82 @@
+---
+import "../styles/main.scss";
+import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/atkinson-hyperlegible-next";
+import { getSiteSettings } from "emdash";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import SkipLink from "../components/SkipLink.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { locales, isLocale, useTranslations, defaultLocale } from "../i18n/ui";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+
+interface Props {
+	title: string;
+	description?: string | null;
+	image?: string | null;
+	canonical?: string | null;
+	content?: { collection: string; id: string; slug?: string | null };
+}
+
+const { title, description, image, canonical, content } = Astro.props;
+
+const rawLocale = Astro.currentLocale;
+const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+const t = useTranslations(locale);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
+const pageDescription = description ?? t("meta.defaultDescription");
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: content ? "content" : "custom",
+	pageType: "website",
+	title: fullTitle,
+	pageTitle: title,
+	description: pageDescription,
+	canonical,
+	image,
+	content,
+	siteName: siteTitle,
+});
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang={locale}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{fullTitle}</title>
+		{pageDescription && <meta name="description" content={pageDescription} />}
+		{canonical && <link rel="canonical" href={canonical} />}
+		{
+			locales.map((loc) => (
+				<link
+					rel="alternate"
+					hreflang={loc}
+					href={new URL(getRelativeLocaleUrl(loc, currentPath.replace(/^\/(fi|en)/, "")), Astro.site ?? Astro.url.origin)}
+				/>
+			))
+		}
+		<EmDashHead page={pageCtx} />
+	</head>
+	<body>
+		<EmDashBodyStart page={pageCtx} />
+		<SkipLink label={t("nav.skipToContent")} />
+
+		<SiteHeader locale={locale} currentPath={currentPath} />
+
+		<main id="main">
+			<slot />
+		</main>
+
+		<SiteFooter locale={locale} />
+
+		<EmDashBodyEnd page={pageCtx} />
+	</body>
+</html>

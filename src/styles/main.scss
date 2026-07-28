@@ -1,0 +1,6 @@
+// Global stylesheet — imports abstracts, base and layout primitives only.
+// No component styles here; those live scoped in each component's
+// <style lang="scss"> block (see PLAN.md §5).
+@use "abstracts" as *;
+@use "base";
+@use "layout";

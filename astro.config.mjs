@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
@@ -11,6 +12,12 @@ export default defineConfig({
 		layout: "constrained",
 		responsiveStyles: true,
 	},
+	i18n: {
+		defaultLocale: "fi",
+		locales: ["fi", "en"],
+		fallback: { en: "fi" },
+		routing: { prefixDefaultLocale: false },
+	},
 	integrations: [
 		react(),
 		emdash({
@@ -18,5 +25,15 @@ export default defineConfig({
 			storage: r2({ binding: "MEDIA" }),
 		}),
 	],
+	vite: {
+		css: {
+			preprocessorOptions: {
+				scss: {
+					additionalData: `@use "abstracts" as *;`,
+					loadPaths: [fileURLToPath(new URL("./src/styles", import.meta.url))],
+				},
+			},
+		},
+	},
 	devToolbar: { enabled: false },
 });

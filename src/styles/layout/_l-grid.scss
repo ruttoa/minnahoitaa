@@ -1,0 +1,27 @@
+@use "../abstracts" as *;
+
+.l-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--s-5);
+
+	@include respond(md) {
+		grid-template-columns: repeat(12, 1fr);
+		gap: var(--s-6);
+	}
+}
+
+@for $i from 1 through 12 {
+	$mobile-span: $i;
+	@if $mobile-span > 4 {
+		$mobile-span: 4;
+	}
+
+	.l-grid__span-#{$i} {
+		grid-column: span #{$mobile-span};
+
+		@include respond(md) {
+			grid-column: span #{$i};
+		}
+	}
+}

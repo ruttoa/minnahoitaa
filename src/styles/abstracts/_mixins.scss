@@ -1,0 +1,46 @@
+@use "breakpoints" as bp;
+
+@mixin respond($breakpoint) {
+	@if $breakpoint == sm {
+		@media (min-width: bp.$bp-sm) {
+			@content;
+		}
+	} @else if $breakpoint == md {
+		@media (min-width: bp.$bp-md) {
+			@content;
+		}
+	} @else if $breakpoint == lg {
+		@media (min-width: bp.$bp-lg) {
+			@content;
+		}
+	} @else if $breakpoint == xl {
+		@media (min-width: bp.$bp-xl) {
+			@content;
+		}
+	} @else {
+		@error "Unknown breakpoint `#{$breakpoint}`. Use sm, md, lg or xl.";
+	}
+}
+
+@mixin focus-ring {
+	outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+}
+
+@mixin visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@mixin reduced-motion {
+	@media (prefers-reduced-motion: no-preference) {
+		@content;
+	}
+}

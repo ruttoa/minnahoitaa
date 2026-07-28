@@ -10,19 +10,25 @@ importers:
     dependencies:
       '@astrojs/cloudflare':
         specifier: 14.1.4
-        version: 14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(esbuild@0.28.1)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)
+        version: 14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(esbuild@0.28.1)(sass@1.94.2)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)
       '@astrojs/react':
         specifier: 6.0.1
-        version: 6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0)
+        version: 6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0)
       '@emdash-cms/cloudflare':
         specifier: 0.30.0
-        version: 0.30.0(3cc979eaccd5e8b1ca78c5348c91ecb0)
+        version: 0.30.0(51fee5835e5f3019600fa6f502276a04)
+      '@fontsource-variable/atkinson-hyperlegible-next':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource-variable/bricolage-grotesque':
+        specifier: 5.3.0
+        version: 5.3.0
       astro:
         specifier: 7.1.3
-        version: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
+        version: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
       emdash:
         specifier: 0.30.0
-        version: 0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3)
+        version: 0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -36,6 +42,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: 4.20260702.1
         version: 4.20260702.1
+      sass:
+        specifier: 1.94.2
+        version: 1.94.2
       wrangler:
         specifier: 4.114.0
         version: 4.114.0(@cloudflare/workers-types@4.20260702.1)
@@ -726,6 +735,12 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
+  '@fontsource-variable/atkinson-hyperlegible-next@5.3.0':
+    resolution: {integrity: sha512-UnLzNUy1RWoLDfydAatP4NaRm99X/WbQEph7q/PymJnCFIOOwKOx3pBmp5ys8trO0dM+CKGuJgeZP9fAR4mQpA==}
+
+  '@fontsource-variable/bricolage-grotesque@5.3.0':
+    resolution: {integrity: sha512-TLi9Q4hJjS2UvoTMRSS2nHu6c4R56lAw60NR9QYtVRCHn0XtsFpiEhNffZ8Glsoxu6wEEwLKBP8lb94J52PNBA==}
+
   '@hono/node-server@1.19.17':
     resolution: {integrity: sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==}
     engines: {node: '>=18.14.1'}
@@ -1210,6 +1225,88 @@ packages:
 
   '@oxc-project/types@0.139.0':
     resolution: {integrity: sha512-r9gHphtCs+1M7J0pw6Sn/hh/Wpa/iQrOOkrNAlVLF/gHq+/CJmHIWKKUUhdWjcD6CIa8idarspCsASiXCXvFUw==}
+
+  '@parcel/watcher-android-arm64@2.6.0':
+    resolution: {integrity: sha512-trgpLSCKRC/huFjXX/Smh+0sWe4+YtKfktIToiMl59ghz7z+qkH6kMvNnUbLyRs9N11t8l4svSCs1+5B3rOAhA==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm64]
+    os: [android]
+
+  '@parcel/watcher-darwin-arm64@2.6.0':
+    resolution: {integrity: sha512-Y3QV0gl7Q1zbfueunkWIERICbEojQFCgpyG7YqOGNFLsckXyI1xu9mAIUpKY9QBYzBtSkN8dBPwd3yiAO9ovMw==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@parcel/watcher-darwin-x64@2.6.0':
+    resolution: {integrity: sha512-Ohv6OpzhUfKYD7Beb8kDvG0jbIxORCYY1JRdZnaBtnjjkJxgD7ZVL0nw2sCYd0yTMKTvz3nnTnOF3cDifK+kvw==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@parcel/watcher-freebsd-x64@2.6.0':
+    resolution: {integrity: sha512-5HmXvDgs8VK+74jF9y9/2FE3/OnlcKmc56tjmSrEuZjpSZOGL+fvAu+HKJBdPs9uwoP2hE6TlSUpXZ/C5jUFmQ==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@parcel/watcher-linux-arm-glibc@2.6.0':
+    resolution: {integrity: sha512-Ps/hui3A+vMbjdqlqAowK2ZL8+BO8dBjxeWXj6npTBs3jx4wWmbPpaLuqwrQrSqIVMCnpWo238bJ1U37GhQOYg==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm]
+    os: [linux]
+    libc: [glibc]
+
+  '@parcel/watcher-linux-arm-musl@2.6.0':
+    resolution: {integrity: sha512-9c6AUHgHoG+IY88MRIHupztQiQnrbqHYQjkM2btA+Bf/wQnQMuiD0Wfk1EVv3TlNT3x41uU71rn6E4xh/+zvkw==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm]
+    os: [linux]
+    libc: [musl]
+
+  '@parcel/watcher-linux-arm64-glibc@2.6.0':
+    resolution: {integrity: sha512-yHRqS2owEXe6Hic9z6Mh1ECsCd+ODVOGvZDyciqRd21+v+o+DnXMOrw50DSpIG2sb8GPEaPPmfeCAWKPJdq46g==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@parcel/watcher-linux-arm64-musl@2.6.0':
+    resolution: {integrity: sha512-WhB2e/V7rqdHHWZusBSPuy5Ei8S6lSz6FE5TKKQz5h3a0O+C+mhY7vxU9b/stqvMb8beLnPY82ZrFTLKs+SrKA==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@parcel/watcher-linux-x64-glibc@2.6.0':
+    resolution: {integrity: sha512-ulGE6x6Oz6iAwg75T8YQSoguBWasniIbX+QWpaYPcCnDOpdWX3k+4xbEYPZVLxOuoJI+svJJPD3sEj8G7lrQ3A==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@parcel/watcher-linux-x64-musl@2.6.0':
+    resolution: {integrity: sha512-tkBYKt7YQrjIJWYDnto2YgO8MRkjlMTSNoRHzsXinBqbLdeOM3L32wPZJvIZxqaLMfSlS/4sUjH/6STVP/XDLw==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@parcel/watcher-win32-arm64@2.6.0':
+    resolution: {integrity: sha512-gIZAP23jaHjGWasY/TY6yL7NHFClf0Ga7FN+iINvk+KN94rhm94lYZhFsbYFNcA04/onvGD9kKmiJLJB2HbNwQ==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@parcel/watcher-win32-x64@2.6.0':
+    resolution: {integrity: sha512-cA+/pXV2YkfxlIcXOQ5fSWqAzzPyD78/x5qbK/I0vUkrlYHA8TIz+MXjAbGouguKVSI4bOmkTSJ1/poVSsgt+A==}
+    engines: {node: '>= 10.0.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@parcel/watcher@2.6.0':
+    resolution: {integrity: sha512-7FNeNl8NCE7aINx7WXiKQrPYZWC/hvrTsmk6zmxbI7LTXE7hVek/n8AfVgpe2y82zl3w0HvCHN0bVKMBoJcC0w==}
+    engines: {node: '>= 10.0.0'}
 
   '@phosphor-icons/react@2.1.10':
     resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
@@ -2443,6 +2540,9 @@ packages:
     engines: {node: '>=16.x'}
     hasBin: true
 
+  immutable@5.1.9:
+    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
+
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
@@ -2465,9 +2565,17 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
+  is-extglob@2.1.1:
+    resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
+    engines: {node: '>=0.10.0'}
+
   is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
     engines: {node: '>=8'}
+
+  is-glob@4.0.3:
+    resolution: {integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==}
+    engines: {node: '>=0.10.0'}
 
   is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
@@ -2778,6 +2886,9 @@ packages:
   node-abi@3.94.0:
     resolution: {integrity: sha512-W5ZNO5KRPB5TkYmGVD9F6YqhsglXJzE6etpbmT+f6EQElhiX/UTG551cnsRGvLG3fyZEg9HwaDmNmj5nwJ4z9g==}
     engines: {node: '>=10'}
+
+  node-addon-api@7.1.1:
+    resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
@@ -3135,6 +3246,11 @@ packages:
   sanitize-html@2.17.6:
     resolution: {integrity: sha512-M4bo9tfv1yfhQZZKkc6dL07ALrGJtfvNOuhX3hU9AVPR/uPQ+nKOJBqTYc7LfMQblTW04mtSWDJWEyLvygJsLA==}
     engines: {node: '>=22.12.0'}
+
+  sass@1.94.2:
+    resolution: {integrity: sha512-N+7WK20/wOr7CzA2snJcUSSNTCzeCGUTFY3OgeQP3mZ1aj9NMQ0mSTXwlrnd89j33zzQJGqIN52GIOmYrfq46A==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
 
   satteri@0.9.5:
     resolution: {integrity: sha512-ZuWVl+vnM64y+/TtX8Kosv2c00W+hLQiiwnEL6H0UKVVrxFqMw4D2CJHHQaouVd89OAhtBBfjWLqhKi3TVUV4w==}
@@ -3792,14 +3908,14 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
-  '@astrojs/cloudflare@14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(esbuild@0.28.1)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)':
+  '@astrojs/cloudflare@14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(esbuild@0.28.1)(sass@1.94.2)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.1
       '@astrojs/underscore-redirects': 1.0.3
-      '@cloudflare/vite-plugin': 1.47.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0))(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))
-      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
+      '@cloudflare/vite-plugin': 1.47.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0))(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))
+      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
       piccolore: 0.1.3
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
       wrangler: 4.114.0(@cloudflare/workers-types@4.20260702.1)
     transitivePeerDependencies:
       - '@types/node'
@@ -3921,17 +4037,17 @@ snapshots:
     dependencies:
       prismjs: 1.30.0
 
-  '@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0)':
+  '@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.10.1
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
-      '@vitejs/plugin-react': 5.2.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0))
+      '@vitejs/plugin-react': 5.2.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0))
       devalue: 5.8.2
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       ultrahtml: 1.7.0
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
@@ -4226,12 +4342,12 @@ snapshots:
     optionalDependencies:
       workerd: 1.20260722.1
 
-  '@cloudflare/vite-plugin@1.47.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0))(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))':
+  '@cloudflare/vite-plugin@1.47.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0))(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))':
     dependencies:
       '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260722.1)
       miniflare: 4.20260722.0
       unenv: 2.0.0-rc.24
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
       workerd: 1.20260722.1
       wrangler: 4.114.0(@cloudflare/workers-types@4.20260702.1)
       ws: 8.21.0
@@ -4355,12 +4471,12 @@ snapshots:
       - typescript
       - zod
 
-  '@emdash-cms/auth@0.30.0(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(kysely@0.29.4)':
+  '@emdash-cms/auth@0.30.0(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(kysely@0.29.4)':
     dependencies:
       '@oslojs/crypto': 1.0.1
       '@oslojs/encoding': 1.1.0
       '@oslojs/webauthn': 1.0.0
-      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
+      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
       ulidx: 2.4.1
       zod: 4.4.3
     optionalDependencies:
@@ -4382,12 +4498,12 @@ snapshots:
       - date-fns
       - zod
 
-  '@emdash-cms/cloudflare@0.30.0(3cc979eaccd5e8b1ca78c5348c91ecb0)':
+  '@emdash-cms/cloudflare@0.30.0(51fee5835e5f3019600fa6f502276a04)':
     dependencies:
-      '@astrojs/cloudflare': 14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(esbuild@0.28.1)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)
+      '@astrojs/cloudflare': 14.1.4(@types/node@26.1.1)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(esbuild@0.28.1)(sass@1.94.2)(wrangler@4.114.0(@cloudflare/workers-types@4.20260702.1))(yaml@2.9.0)
       '@cloudflare/workers-types': 4.20260702.1
-      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
-      emdash: 0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3)
+      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
+      emdash: 0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3)
       jose: 6.2.4
       kysely: 0.29.4
       kysely-d1: 0.4.0(kysely@0.29.4)
@@ -4590,6 +4706,10 @@ snapshots:
       tabbable: 6.5.0
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fontsource-variable/atkinson-hyperlegible-next@5.3.0': {}
+
+  '@fontsource-variable/bricolage-grotesque@5.3.0': {}
 
   '@hono/node-server@1.19.17(hono@4.12.32)':
     dependencies:
@@ -4997,6 +5117,63 @@ snapshots:
       '@oslojs/encoding': 1.0.0
 
   '@oxc-project/types@0.139.0': {}
+
+  '@parcel/watcher-android-arm64@2.6.0':
+    optional: true
+
+  '@parcel/watcher-darwin-arm64@2.6.0':
+    optional: true
+
+  '@parcel/watcher-darwin-x64@2.6.0':
+    optional: true
+
+  '@parcel/watcher-freebsd-x64@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-arm-glibc@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-arm-musl@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-arm64-glibc@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-arm64-musl@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-x64-glibc@2.6.0':
+    optional: true
+
+  '@parcel/watcher-linux-x64-musl@2.6.0':
+    optional: true
+
+  '@parcel/watcher-win32-arm64@2.6.0':
+    optional: true
+
+  '@parcel/watcher-win32-x64@2.6.0':
+    optional: true
+
+  '@parcel/watcher@2.6.0':
+    dependencies:
+      detect-libc: 2.1.2
+      is-glob: 4.0.3
+      node-addon-api: 7.1.1
+      picomatch: 4.0.5
+    optionalDependencies:
+      '@parcel/watcher-android-arm64': 2.6.0
+      '@parcel/watcher-darwin-arm64': 2.6.0
+      '@parcel/watcher-darwin-x64': 2.6.0
+      '@parcel/watcher-freebsd-x64': 2.6.0
+      '@parcel/watcher-linux-arm-glibc': 2.6.0
+      '@parcel/watcher-linux-arm-musl': 2.6.0
+      '@parcel/watcher-linux-arm64-glibc': 2.6.0
+      '@parcel/watcher-linux-arm64-musl': 2.6.0
+      '@parcel/watcher-linux-x64-glibc': 2.6.0
+      '@parcel/watcher-linux-x64-musl': 2.6.0
+      '@parcel/watcher-win32-arm64': 2.6.0
+      '@parcel/watcher-win32-x64': 2.6.0
+    optional: true
 
   '@phosphor-icons/react@2.1.10(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
@@ -5506,7 +5683,7 @@ snapshots:
     dependencies:
       blurhash: 2.0.5
 
-  '@vitejs/plugin-react@5.2.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0))':
+  '@vitejs/plugin-react@5.2.0(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
@@ -5514,7 +5691,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5619,13 +5796,13 @@ snapshots:
 
   aria-query@5.3.2: {}
 
-  astro-portabletext@0.11.4(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)):
+  astro-portabletext@0.11.4(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)):
     dependencies:
       '@portabletext/toolkit': 3.0.3
       '@portabletext/types': 2.0.15
-      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
+      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
 
-  astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0):
+  astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler-rs': 0.3.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
       '@astrojs/internal-helpers': 0.10.1
@@ -5675,8 +5852,8 @@ snapshots:
       ultrahtml: 1.7.0
       unifont: 0.7.4
       unstorage: 1.17.5
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
-      vitefu: 1.1.3(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0))
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
+      vitefu: 1.1.3(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 22.0.0
       zod: 4.4.3
@@ -5997,14 +6174,14 @@ snapshots:
 
   electron-to-chromium@1.5.396: {}
 
-  emdash@0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3):
+  emdash@0.30.0(@astrojs/react@6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0))(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3):
     dependencies:
-      '@astrojs/react': 6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yaml@2.9.0)
+      '@astrojs/react': 6.0.1(@types/node@26.1.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(esbuild@0.28.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.94.2)(yaml@2.9.0)
       '@atcute/client': 5.1.1(@atcute/lexicons@2.0.3)(typescript@6.0.3)
       '@atcute/lexicons': 2.0.3
       '@atcute/multibase': 1.2.5
       '@emdash-cms/admin': 0.30.0(@atcute/identity@2.0.2(@atcute/lexicons@2.0.3)(typescript@6.0.3))(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.1(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1))(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(echarts@6.1.0)(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.3)(zod@4.4.3)
-      '@emdash-cms/auth': 0.30.0(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))(kysely@0.29.4)
+      '@emdash-cms/auth': 0.30.0(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))(kysely@0.29.4)
       '@emdash-cms/gutenberg-to-portable-text': 0.30.0
       '@emdash-cms/plugin-types': 0.3.0
       '@emdash-cms/registry-client': 0.3.4(typescript@6.0.3)
@@ -6027,8 +6204,8 @@ snapshots:
       '@tiptap/suggestion': 3.29.1(@floating-ui/dom@1.8.0)(@tiptap/core@3.29.1(@tiptap/pm@3.29.1))(@tiptap/pm@3.29.1)
       '@unpic/placeholder': 0.1.2
       arctic: 3.7.0
-      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
-      astro-portabletext: 0.11.4(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))
+      astro: 7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0)
+      astro-portabletext: 0.11.4(astro@7.1.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(sass@1.94.2)(yaml@2.9.0))
       better-sqlite3: 12.11.1
       blurhash: 2.0.5
       citty: 0.1.6
@@ -6404,6 +6581,8 @@ snapshots:
 
   image-size@2.0.2: {}
 
+  immutable@5.1.9: {}
+
   inherits@2.0.4: {}
 
   ini@1.3.8: {}
@@ -6416,7 +6595,15 @@ snapshots:
 
   is-docker@4.0.0: {}
 
+  is-extglob@2.1.1:
+    optional: true
+
   is-fullwidth-code-point@3.0.0: {}
+
+  is-glob@4.0.3:
+    dependencies:
+      is-extglob: 2.1.1
+    optional: true
 
   is-plain-obj@4.1.0: {}
 
@@ -6662,6 +6849,9 @@ snapshots:
   node-abi@3.94.0:
     dependencies:
       semver: 7.8.5
+
+  node-addon-api@7.1.1:
+    optional: true
 
   node-domexception@1.0.0:
     optional: true
@@ -7062,6 +7252,14 @@ snapshots:
       parse-srcset: 1.0.2
       postcss: 8.5.23
 
+  sass@1.94.2:
+    dependencies:
+      chokidar: 4.0.3
+      immutable: 5.1.9
+      source-map-js: 1.2.1
+    optionalDependencies:
+      '@parcel/watcher': 2.6.0
+
   satteri@0.9.5:
     dependencies:
       '@types/estree-jsx': 1.0.5
@@ -7457,7 +7655,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0):
+  vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -7468,11 +7666,12 @@ snapshots:
       '@types/node': 26.1.1
       esbuild: 0.28.1
       fsevents: 2.3.3
+      sass: 1.94.2
       yaml: 2.9.0
 
-  vitefu@1.1.3(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)):
+  vitefu@1.1.3(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)):
     optionalDependencies:
-      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(yaml@2.9.0)
+      vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(sass@1.94.2)(yaml@2.9.0)
 
   volar-service-css@0.0.71(@volar/language-service@2.4.28):
     dependencies:

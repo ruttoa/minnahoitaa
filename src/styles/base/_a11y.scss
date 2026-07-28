@@ -1,0 +1,40 @@
+@use "../abstracts" as *;
+
+.visually-hidden {
+	@include visually-hidden;
+}
+
+:focus-visible {
+	@include focus-ring;
+}
+
+// Skip link: visually hidden until focused, then pinned to the top.
+.skip-link {
+	@include visually-hidden;
+
+	&:focus {
+		position: fixed;
+		top: var(--s-3);
+		left: var(--s-3);
+		width: auto;
+		height: auto;
+		clip: auto;
+		z-index: 1000;
+		padding: var(--s-3) var(--s-5);
+		background: var(--c-spruce-900);
+		color: var(--c-text-on-dark);
+		border-radius: var(--s-1);
+		font-weight: 600;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
