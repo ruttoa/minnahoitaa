@@ -18,6 +18,12 @@ export default defineConfig({
 		fallback: { en: "fi" },
 		routing: { prefixDefaultLocale: false },
 	},
+	// 301s from the old Webador site's URLs. /palvelut carries over unchanged.
+	redirects: {
+		"/hinnasto-2": { status: 301, destination: "/hinnasto" },
+		"/kuvagalleria": { status: 301, destination: "/galleria" },
+		"/ota-yhteyttae": { status: 301, destination: "/ota-yhteytta" },
+	},
 	integrations: [
 		react(),
 		emdash({

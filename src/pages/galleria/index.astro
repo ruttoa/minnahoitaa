@@ -1,0 +1,13 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import GalleryGrid from "../../components/GalleryGrid.astro";
+import { isLocale, defaultLocale } from "../../i18n/ui";
+
+const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
+---
+
+<PageLayout title="Kuvagalleria" heading="Kuvagalleria">
+	<div class="l-container">
+		<GalleryGrid locale={locale} />
+	</div>
+</PageLayout>

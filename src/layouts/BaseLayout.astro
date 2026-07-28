@@ -2,7 +2,7 @@
 import "../styles/main.scss";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/atkinson-hyperlegible-next";
-import { getSiteSettings } from "emdash";
+import { getSiteSettings, getEmDashCollection } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { getRelativeLocaleUrl } from "astro:i18n";
@@ -44,6 +44,32 @@ const pageCtx = createPublicPageContext({
 });
 
 const currentPath = Astro.url.pathname;
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+
+const { entries: businessInfoEntries } = await getEmDashCollection("business_info", { limit: 1 });
+const info = businessInfoEntries[0]?.data;
+const { entries: servicesForLd } = await getEmDashCollection("services", { orderBy: { order: "asc" } });
+
+const localBusinessLd = {
+	"@context": "https://schema.org",
+	"@type": "LocalBusiness",
+	name: siteTitle,
+	description: pageDescription,
+	url: siteOrigin.toString(),
+	...(info?.email && { email: info.email }),
+	...(info?.phone_e164 && { telephone: info.phone_e164 }),
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: "Vantaa",
+		addressCountry: "FI",
+	},
+	...(info?.service_area && { areaServed: info.service_area }),
+	priceRange: "18–55 €",
+	makesOffer: servicesForLd.map((s) => ({
+		"@type": "Offer",
+		itemOffered: { "@type": "Service", name: s.data.title },
+	})),
+};
 ---
 
 <!doctype html>
@@ -67,6 +93,7 @@ const currentPath = Astro.url.pathname;
 			))
 		}
 		<EmDashHead page={pageCtx} />
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(localBusinessLd)} />
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />

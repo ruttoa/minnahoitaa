@@ -42,5 +42,12 @@
 	"404.contactLink": "Get in touch",
 	"gallery.empty": "Photos coming soon.",
 	"home.servicesHeading": "Services",
-	"home.testimonialsHeading": "What clients say"
+	"home.testimonialsHeading": "What clients say",
+	"contact.intro": "Fill in the form, call, or send a WhatsApp message — whatever suits you best.",
+	"contact.responseTime": "I usually reply within a day.",
+	"contact.serviceAreaLabel": "Service area",
+	"contact.phoneLabel": "Phone",
+	"contact.emailLabel": "Email",
+	"contact.businessIdLabel": "Business ID",
+	"contact.formHeading": "Send a message"
 }

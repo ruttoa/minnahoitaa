@@ -42,5 +42,12 @@
 	"404.contactLink": "Ota yhteyttä",
 	"gallery.empty": "Kuvia lisätään pian.",
 	"home.servicesHeading": "Palvelut",
-	"home.testimonialsHeading": "Asiakkaiden kokemuksia"
+	"home.testimonialsHeading": "Asiakkaiden kokemuksia",
+	"contact.intro": "Täytä lomake, soita tai laita WhatsApp-viestiä — valitse itsellesi sopivin tapa.",
+	"contact.responseTime": "Vastaan viesteihin yleensä vuorokauden kuluessa.",
+	"contact.serviceAreaLabel": "Toiminta-alue",
+	"contact.phoneLabel": "Puhelin",
+	"contact.emailLabel": "Sähköposti",
+	"contact.businessIdLabel": "Y-tunnus",
+	"contact.formHeading": "Lähetä viesti"
 }

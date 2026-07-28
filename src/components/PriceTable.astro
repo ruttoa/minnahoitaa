@@ -38,8 +38,15 @@ const groupsWithItems = await Promise.all(
 							<dd>
 								{typeof item.data.amount === "number" ? (
 									<>
-										<span class="price-table__amount">{formatPrice(item.data.amount, locale)}</span>
-										{item.data.unit && <span class="price-table__unit"> {item.data.unit}</span>}
+										<span class="price-table__amount">
+											{item.data.unit?.startsWith("%") ? `${item.data.amount} %` : formatPrice(item.data.amount, locale)}
+										</span>
+										{item.data.unit && (
+											<span class="price-table__unit">
+												{" "}
+												{item.data.unit.startsWith("%") ? item.data.unit.replace(/^%\s*/, "") : item.data.unit}
+											</span>
+										)}
 									</>
 								) : (
 									item.data.note && <span class="price-table__note">{item.data.note}</span>
