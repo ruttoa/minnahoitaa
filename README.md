@@ -45,7 +45,7 @@ Once set up, the client (or any editor) manages all copy, pricing, testimonials,
 
 ### Reseeding from scratch
 
-The content set (Finnish so far; English lands in a later phase) lives in `seed/seed.json`, applied automatically the first time the dev server boots against an empty database. To force a full reseed locally:
+The full bilingual content set (fi + en) lives in `seed/seed.json`, applied automatically the first time the dev server boots against an empty database. To force a full reseed locally:
 
 ```bash
 pnpm astro dev stop
@@ -108,6 +108,19 @@ No inline `style="…"` attributes, no Tailwind, no `!important`. Component styl
 
 `emdash`, `@emdash-cms/cloudflare`, `@emdash-cms/plugin-forms`, and `astro` are pinned to **exact** versions (no `^`) in `package.json` — EmDash is beta and its API is still moving. Bump deliberately, re-test the admin, the contact form (see below), and a full build after bumping, and update the pin in the same commit.
 
+## QA results
+
+Checked against [PLAN.md §10](PLAN.md)'s Definition of Done, against the dev server (local production-equivalent testing didn't set up a full `wrangler` D1/R2 preview environment — see caveats below):
+
+- **Build**: clean, `pnpm typecheck` and `pnpm build` both zero errors/warnings across all 44 source files.
+- **Accessibility**: [axe-core](https://github.com/dequelabs/axe-core) run against all 13 routes (6 pages × fi/en + `/404`) — **zero violations** on every one. Caught and fixed one real issue first (`heading-order` on `/hinnasto/`: `PriceTable`'s group headings were `<h3>` directly under the page's `<h1>`, skipping `<h2>` — now `<h2>`, matching every other page's hierarchy). Manual keyboard pass on the contact page confirmed a single logical tab order from skip-link through the entire form to the privacy-statement link, with the honeypot field correctly excluded (`tabindex="-1"`) and the focus ring confirmed via `getComputedStyle` (`2px solid #E8A33D`, `2px` offset) — no screen-reader (VoiceOver/NVDA) pass was performed, this environment can't run one; do that before launch.
+- **Lighthouse** (mobile, local dev server, via `npx lighthouse`): homepage 98/100/100/100 (Performance/Accessibility/Best-Practices/SEO), contact page 100/100/100/100, English homepage 99/100/100/100 — all comfortably clear the ≥95 bar. Caught and fixed a missing favicon (`public/favicon.svg`, a simple paw mark in the token palette) that was 404ing and dinging Best Practices.
+- **W3C HTML validator**: spot-checked the homepage via the Nu validator API. Found and fixed one real bug (a duplicate `<meta name="description">` — `BaseLayout` and EmDash's own `<EmDashHead>` were both rendering one from the same value; removed ours). The remaining errors it reported (CSS `object-position` "incompatible" pairs, a third-party admin stylesheet parse error, absolute filesystem paths in dev-mode `<script src>` attributes) are Vite dev-server and Astro-framework artifacts that don't exist in a production build — not re-validated against an actual `wrangler`-served build; worth a real pass before launch.
+- **Style/string hygiene**: zero `style="` attributes in our own code (one exception: the forms plugin's honeypot field carries an inline style in its own template — third-party code, not ours, see AGENTS.md). Zero Finnish diacritics (`ä/ö/Ä/Ö`) anywhere in `.astro` templates — confirmed by grep, everything routes through `src/i18n/` or the CMS. Two deliberate `!important` uses, both documented exceptions: the `prefers-reduced-motion` kill-switch (industry-standard pattern) and the print stylesheet's visibility overrides.
+- **CTAs**: every accent-styled button (5 locations) resolves through `CONTACT_PATH`, confirmed by grep.
+- **Prices**: every seeded amount (18, 25, 33, 34, 37, 38, 40, 43, 55) matches PLAN.md §1 exactly.
+- **Responsive**: visually reviewed at 320px, 768px (tablet preset), and 1280px — holds correctly at all three. Full 320/768/1024/1440 + 200%-zoom sweep from the Definition of Done wasn't completed exhaustively; spot-checks found no issues.
+
 ## Known open items before launch
 
 - **Privacy statement** (`/tietosuoja/`) is a draft — flagged on the page itself, needs legal review before going live.
@@ -115,3 +128,5 @@ No inline `style="…"` attributes, no Tailwind, no `!important`. Component styl
 - **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
 - **Gallery photos**: `gallery_items` is seeded empty — needs the client's go-ahead on which personal pet photos can be published (see `docs/media-credits.md`).
 - **English content**: real translations throughout (not machine-translated placeholders), but nobody's proofread them against the client's actual voice — a native-speaker pass before launch would be worthwhile.
+- **Screen-reader pass**: not performed (no VoiceOver/NVDA available in this environment) — do this before launch, especially on the contact form and mobile nav.
+- **Production-build validation**: Lighthouse/W3C/QA above all ran against the local dev server, not an actual `wrangler`-served production build — re-run at least Lighthouse against the real deployment once it exists.

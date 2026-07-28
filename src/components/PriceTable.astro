@@ -32,7 +32,7 @@ const groupsWithItems = await Promise.all(
 	{
 		groupsWithItems.map(({ group, items }) => (
 			<section class="price-table__group">
-				<h3>{group.data.label}</h3>
+				<h2>{group.data.label}</h2>
 				<dl class="price-table__list">
 					{items.map((item) => (
 						<div class="price-table__row">
@@ -69,7 +69,7 @@ const groupsWithItems = await Promise.all(
 		gap: var(--s-9);
 
 		&__group {
-			h3 {
+			h2 {
 				margin-bottom: var(--s-4);
 			}
 		}

@@ -104,3 +104,13 @@ Three sanctioned moments (PLAN.md §2), all wrapped in `@media (prefers-reduced-
 Print stylesheet lives in `src/styles/base/_print.scss` (hides header/footer/CTAs/decorative glows, forces black-on-white, keeps price rows from breaking across a page) — the price list (`/hinnasto/`) is the primary target per PLAN.md §7, but the rules apply site-wide.
 
 **Tooling note for future screenshot-based review**: the Browser pane's screenshot tool has a rendering quirk in this environment — at some explicit `width`/`height` combinations (observed at 768×900) it captures a devicePixelRatio-scaled but uncropped-to-fit image, making a fully-correct layout look cut off at roughly half width. Verified this is a capture artifact, not a real bug, via `getComputedStyle`/`getBoundingClientRect` (grid columns summed to the full requested width) — the `tablet`/`mobile` presets and explicit widths like 320 or 1280 rendered correctly. If a screenshot at some other specific width looks implausibly broken (content cut off mid-container with a large flat blank area, not a wrapping/overflow issue), cross-check computed styles before concluding it's a real layout bug.
+
+## QA (Phase 8)
+
+Full results in [README.md](README.md#qa-results). Three real bugs found and fixed via actual tooling (axe-core, Lighthouse, W3C Nu validator), not just re-reading the code:
+
+- `PriceTable`'s group headings were `<h3>` directly under each page's `<h1>` (skipping `<h2>`) — axe caught this as `heading-order` on `/hinnasto/` specifically (other pages happened to have an `<h2>` in between). Now `<h2>`.
+- No favicon existed — Lighthouse's `errors-in-console` audit caught the resulting `/favicon.ico` 404. Added `public/favicon.svg` (a simple paw mark in the token palette, referenced from `BaseLayout`) rather than letting the browser fall back to the unstyled default.
+- `BaseLayout` and EmDash's own `<EmDashHead>` were both rendering `<meta name="description">` from the same value — the W3C validator flags duplicate description tags as an error. Removed ours; `<EmDashHead>` already covers it (and og:/twitter: description too).
+
+When installing `axe-core` or similar testing-only tools to run browser-side checks, they went in as a `devDependency` and any temp file used to inject them into the page (e.g. copying `axe.min.js` into `public/` so a `<script src>` could load it) was deleted again afterward — don't leave test-only assets in `public/`.
