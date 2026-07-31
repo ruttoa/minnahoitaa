@@ -18,7 +18,7 @@ The admin UI is at `http://localhost:4321/_emdash/admin`.
 |---|---|
 | `astro.config.mjs` | Astro config: `emdash()` integration, D1/R2, i18n block (`fi` default, `en` under `/en/`), Vite SCSS `additionalData` auto-injecting `@use "abstracts" as *;` into every component style block |
 | `src/live.config.ts` | EmDash loader registration (boilerplate — don't modify) |
-| `seed/seed.json` | Schema definition + full bilingual content (collections, fields, menus — fi + en via `translationOf`). `gallery_items` collection exists but has no entries yet: all 31 archived photos are uploaded to the media library (`scripts/upload-media.sh`, publish permission confirmed — see `docs/media-credits.md`) but none are attached to a `gallery_items`/`services.image` entry yet — that's a still-open content-curation step, not a permission blocker. |
+| `seed/seed.json` | Schema definition + full bilingual content (collections, fields, menus — fi + en via `translationOf`). `gallery_items` has 26 published entries (fi + en), created via `scripts/populate-gallery.py` against media uploaded by `scripts/upload-media.sh` — not seed-reproducible, same reasoning as the contact form below. See `docs/media-credits.md` for which photos are included/excluded. `services.image` is still unset for all three services. |
 | `emdash-env.d.ts` | Generated types for collections (auto-regenerated on dev server start — don't hand-edit) |
 | `src/layouts/BaseLayout.astro` | `<html lang>`, head/meta/hreflang, skip link, `SiteHeader`, `<main id="main">`, `SiteFooter`, EmDash page-contribution slots |
 | `src/layouts/PageLayout.astro` | `BaseLayout` + page-header pattern (H1 + optional intro) |

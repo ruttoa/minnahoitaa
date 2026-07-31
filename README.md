@@ -61,6 +61,8 @@ Then sign in once via `http://localhost:4321/_emdash/api/setup/dev-bypass?redire
 
 to recreate the contact form. **The contact form is not part of `seed/seed.json`** — it's configured through the `@emdash-cms/plugin-forms` admin API, which has no seed-file integration, so this script is the only way to reproduce it. See [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms) for why, and for two plugin bugs worked around in `src/components/ContactForm.astro`.
 
+The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` publishes the curated `gallery_items` referencing them — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` is **not idempotent**; re-running it creates duplicates.
+
 ```bash
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
 ```
@@ -87,7 +89,10 @@ src/
 content-source/    Archived old-site text + images for reference (gitignored, not
                    part of the build — see docs/media-credits.md for licensing)
 scripts/           setup-contact-form.sh + contact-form.json — recreates the
-                   contact form after a reseed (see "Reseeding from scratch" above)
+                   contact form after a reseed (see "Reseeding from scratch" above);
+                   upload-media.sh + populate-gallery.py — upload archived photos
+                   to the media library and publish the curated gallery_items
+                   (see docs/media-credits.md)
 ```
 
 ## Styling rules
@@ -126,7 +131,7 @@ Checked against [PLAN.md §10](PLAN.md)'s Definition of Done, against the dev se
 - **Privacy statement** (`/tietosuoja/`) is a draft — flagged on the page itself, needs legal review before going live.
 - **Contact form email delivery** hasn't been confirmed end-to-end — submissions confirmed landing in the admin, but whether the notification email actually reaches `minna.petsitter@gmail.com` needs a live check (see [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms)).
 - **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
-- **Gallery photos**: all 31 archived photos are uploaded to the EmDash media library (publish permission confirmed 2026-07-28, see `docs/media-credits.md`), but none are wired into `gallery_items` or `services.image` yet — `/galleria/` still shows its empty state until specific photos are chosen, captioned, and attached.
+- **Gallery photos**: 26 of the 31 archived photos are published as bilingual `gallery_items` (see `scripts/populate-gallery.py` and `docs/media-credits.md` for the exclusions and two flagged photos worth a second look before launch). `services.image` is still unset for all three services.
 - **English content**: real translations throughout (not machine-translated placeholders), but nobody's proofread them against the client's actual voice — a native-speaker pass before launch would be worthwhile.
 - **Screen-reader pass**: not performed (no VoiceOver/NVDA available in this environment) — do this before launch, especially on the contact form and mobile nav.
 - **Production-build validation**: Lighthouse/W3C/QA above all ran against the local dev server, not an actual `wrangler`-served production build — re-run at least Lighthouse against the real deployment once it exists.
