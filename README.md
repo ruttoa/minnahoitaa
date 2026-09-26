@@ -63,7 +63,7 @@ Then sign in once via `http://localhost:4321/_emdash/api/setup/dev-bypass?redire
 
 to recreate the contact form. **The contact form is not part of `seed/seed.json`** — it's configured through the `@emdash-cms/plugin-forms` admin API, which has no seed-file integration, so this script is the only way to reproduce it. See [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms) for why, and for two plugin bugs worked around in `src/components/ContactForm.astro`.
 
-The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
+The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page and sets the homepage hero photos (their `imageUrl`s are per-DB, so they're not in the seed) — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
 
 **Against a deployed site**: the three scripts also work remotely. Create an API token in the admin (Settings → API tokens; the forms plugin's routes need the `admin` scope, the others `media:write`/`content:write`), then pass the base URL and the token:
 

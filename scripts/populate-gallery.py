@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Builds the gallery on the `galleria` page: one Portable Text `image` block
+"""Builds the gallery on the `galleria` page and sets the homepage hero photos.
+
+Gallery: one Portable Text `image` block
 per curated photo (fi + en alt text below), referencing media already uploaded
 to the library by scripts/upload-media.sh (content-source/media-upload-map.json).
 
@@ -120,6 +122,17 @@ ITEMS = [
 ]
 
 
+# Homepage photos: (locale, block index in the `etusivu` content) -> filename.
+# Media urls are per-database, so seed.json leaves `imageUrl` out of these hero
+# blocks (fi: page-opening hero + the "Minusta" hero; en: page-opening hero);
+# they're filled in here from the upload map.
+HERO_IMAGES = {
+    ("fi", 0): "img-20251009-wa0005-high-6tbk37.jpg",
+    ("fi", 2): "img_20250419_052357-high-5yo08l.jpg",
+    ("en", 0): "img-20251009-wa0005-high-6tbk37.jpg",
+}
+
+
 def image_block(rec, alt, n):
     block = {
         "_type": "image",
@@ -176,6 +189,21 @@ def main():
         api("PUT", f"/_emdash/api/content/pages/{entry['id']}", body)
         api("POST", f"/_emdash/api/content/pages/{entry['id']}/publish")
         print(f"{locale}: {len(content)} images", file=sys.stderr)
+
+    for locale in ("fi", "en"):
+        entry = next(p for p in pages if p["slug"] == "etusivu" and p["locale"] == locale)
+        detail = api("GET", f"/_emdash/api/content/pages/{entry['id']}")["data"]
+        content = detail["item"]["data"]["content"]
+        for (loc, idx), filename in HERO_IMAGES.items():
+            if loc == locale:
+                rec = media[filename]
+                content[idx]["imageUrl"] = f"/_emdash/api/media/file/{rec['storageKey']}"
+        body = {"data": {"title": entry["data"]["title"], "content": content}}
+        if detail.get("_rev"):
+            body["_rev"] = detail["_rev"]
+        api("PUT", f"/_emdash/api/content/pages/{entry['id']}", body)
+        api("POST", f"/_emdash/api/content/pages/{entry['id']}/publish")
+        print(f"{locale}: hero images set on etusivu", file=sys.stderr)
 
 
 if __name__ == "__main__":

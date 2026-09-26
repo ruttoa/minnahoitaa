@@ -18,7 +18,7 @@ The admin UI is at `http://localhost:4321/_emdash/admin`.
 |---|---|
 | `astro.config.mjs` | Astro config: `emdash()` integration, D1/R2, i18n block (`fi` default, `en` under `/en/`), Vite SCSS `additionalData` auto-injecting `@use "abstracts" as *;` into every component style block |
 | `src/live.config.ts` | EmDash loader registration (boilerplate — don't modify) |
-| `seed/seed.json` | Schema definition + full bilingual content (collections, fields, menus — fi + en via `translationOf`). Collections are just `pages` and `business_info`; all other content lives in `pages` entries as Portable Text blocks. The gallery images are **not** in the seed (media ids differ per DB) — `scripts/populate-gallery.py` builds them onto the `galleria` page from the media library; see `docs/media-credits.md`. |
+| `seed/seed.json` | Schema definition + full bilingual content (collections, fields, menus — fi + en via `translationOf`). Collections are just `pages` and `business_info`; all other content lives in `pages` entries as Portable Text blocks. The gallery images are **not** in the seed (media ids differ per DB) — `scripts/populate-gallery.py` builds them onto the `galleria` page from the media library, and also sets the hero `imageUrl`s on the `etusivu` entries (left out of the seed for the same reason); see `docs/media-credits.md`. |
 | `emdash-env.d.ts` | Generated types for collections (auto-regenerated on dev server start — don't hand-edit) |
 | `src/layouts/BaseLayout.astro` | `<html lang>`, head/meta/hreflang, skip link, `SiteHeader`, `<main id="main">`, `SiteFooter`, EmDash page-contribution slots |
 | `src/layouts/PageLayout.astro` | `BaseLayout` + page-header pattern (H1 + optional intro) |
