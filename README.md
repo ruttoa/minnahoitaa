@@ -41,7 +41,7 @@ pnpm approve-builds --all
 
 Visit `http://localhost:4321/_emdash/admin`. First visit walks through a setup wizard: site title/tagline, an admin account (email), then a **passkey** (Touch ID / security key / PIN) — this step needs a real device present, it can't be scripted.
 
-**Logging in locally without a passkey**: if the dev server gets restarted (e.g. after wiping `.wrangler/state`) and `/_emdash/admin` asks for a passkey you don't have registered on this machine, visit `http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin` instead — it signs you in and sets a session cookie without the passkey step. Local dev only, never available against a real deployment. This is the same route the admin-API scripts (`upload-media.sh`, `populate-gallery.py`, `setup-contact-form.sh`) use to authenticate themselves.
+**Logging in locally without a passkey**: if the dev server gets restarted (e.g. after wiping `.wrangler/state`) and `/_emdash/admin` asks for a passkey you don't have registered on this machine, visit `http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin` instead — it signs you in and sets a session cookie without the passkey step. Local dev only, never available against a real deployment. This is the same route the admin-API scripts (`upload-media.py`, `populate-gallery.py`, `setup-contact-form.sh`) use to authenticate themselves.
 
 Once set up, the client (or any editor) manages all copy (as page blocks), gallery images, and site settings from there — see [PLAN.md §4](PLAN.md) for the content model. Nothing editorial should be hardcoded in `.astro` templates; if you find yourself typing Finnish prose into a component, it belongs in EmDash instead (or in `src/i18n/*.json` if it's a UI string like a button label, not editorial content).
 
@@ -63,18 +63,18 @@ Then sign in once via `http://localhost:4321/_emdash/api/setup/dev-bypass?redire
 
 to recreate the contact form. **The contact form is not part of `seed/seed.json`** — it's configured through the `@emdash-cms/plugin-forms` admin API, which has no seed-file integration, so this script is the only way to reproduce it. See [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms) for why, and for two plugin bugs worked around in `src/components/ContactForm.astro`.
 
-The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page and sets the homepage hero photos (their `imageUrl`s are per-DB, so they're not in the seed) — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
+The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `python3 scripts/upload-media.py` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page and sets the homepage hero photos (their `imageUrl`s are per-DB, so they're not in the seed) — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
 
 **Against a deployed site**: the three scripts also work remotely. Create an API token in the admin (Settings → API tokens; the forms plugin's routes need the `admin` scope, the others `media:write`/`content:write`), then pass the base URL and the token:
 
 ```bash
 export EMDASH_TOKEN=ec_pat_...
-./scripts/upload-media.sh https://example.com
+python3 scripts/upload-media.py https://example.com
 python3 scripts/populate-gallery.py https://example.com
 ./scripts/setup-contact-form.sh https://example.com
 ```
 
-Run `upload-media.sh` before `populate-gallery.py` (it writes the media-id map the latter reads). Only `http://localhost:4321` uses the dev-bypass login; every other URL requires `EMDASH_TOKEN`.
+Run `upload-media.py` before `populate-gallery.py` (it writes the media-id map the latter reads). Only `http://localhost:4321` uses the dev-bypass login; every other URL requires `EMDASH_TOKEN`.
 
 ```bash
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
@@ -119,7 +119,7 @@ packages/          marketing-blocks/ — site-local EmDash plugin (hero/features
                    into node_modules via `pnpm add link:` (see AGENTS.md)
 scripts/           setup-contact-form.sh + contact-form.json — recreates the
                    contact form after a reseed (see "Reseeding from scratch" above);
-                   upload-media.sh + populate-gallery.py — upload archived photos
+                   upload-media.py + populate-gallery.py — upload archived photos
                    to the media library and build the gallery page from them
                    (see docs/media-credits.md)
 ```

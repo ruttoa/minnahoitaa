@@ -26,6 +26,7 @@ import http.cookiejar
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -67,7 +68,14 @@ SEO = {
 
 jar = http.cookiejar.CookieJar()
 opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-HEADERS = {"Content-Type": "application/json", "X-EmDash-Request": "1", "Origin": BASE_URL}
+# A plain descriptive User-Agent: Cloudflare's bot protection tends to reject the
+# default "Python-urllib/x.y" one with a 403 before the request reaches the site.
+HEADERS = {
+    "Content-Type": "application/json",
+    "X-EmDash-Request": "1",
+    "Origin": BASE_URL,
+    "User-Agent": "minnahoitaa-setup-scripts/1.0",
+}
 if BASE_URL == "http://localhost:4321":
     opener.open(f"{BASE_URL}/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin")
 else:
@@ -81,8 +89,11 @@ def call(method, path, body=None):
         headers=HEADERS,
         method=method,
     )
-    with opener.open(req) as r:
-        return json.load(r)["data"]
+    try:
+        with opener.open(req) as r:
+            return json.load(r)["data"]
+    except urllib.error.HTTPError as e:
+        sys.exit(f"{method} {path} -> HTTP {e.code}: {e.read().decode(errors='replace')[:500]}")
 
 
 for locale in ("fi", "en"):

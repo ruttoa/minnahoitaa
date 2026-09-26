@@ -2,7 +2,7 @@
 
 Source: downloaded from the old Webador site's CDN (`primary.jwwb.nl`) on 2026-07-28, archived at `content-source/images/` (gitignored, not committed). Never hotlinked in the new site.
 
-**Status (2026-07-28): all 31 files uploaded to the EmDash media library** via `scripts/upload-media.sh` (`POST /_emdash/api/media`) — confirmed present in `/_emdash/admin/media`. Publish permission for the personal client-pet photos was confirmed directly in this session (not re-derived from Minna in writing) — if that changes, pull the affected items from the media library and from any `gallery_items`/`services.image` they've been attached to. The mapping of filename → uploaded media `{id, url}` is at `content-source/media-upload-map.json` (also gitignored).
+**Status (2026-07-28): all 31 files uploaded to the EmDash media library** via `scripts/upload-media.py` (`POST /_emdash/api/media`) — confirmed present in `/_emdash/admin/media`. Publish permission for the personal client-pet photos was confirmed directly in this session (not re-derived from Minna in writing) — if that changes, pull the affected items from the media library and from any `gallery_items`/`services.image` they've been attached to. The mapping of filename → uploaded media `{id, url}` is at `content-source/media-upload-map.<site>.json` (also gitignored).
 
 **Status (2026-07-31): 26 of the 31 uploaded files are now `image` blocks on the bilingual `galleria` page** (fi + en alt text) via `scripts/populate-gallery.py` (originally as `gallery_items` entries; that content type was later removed in favor of image blocks) — see [README.md](../README.md#reseeding-from-scratch) and the "Gallery curation notes" section below for the three exclusions beyond the licensed-stock/decorative-card photos.
 

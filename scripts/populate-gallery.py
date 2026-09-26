@@ -3,7 +3,7 @@
 
 Gallery: one Portable Text `image` block
 per curated photo (fi + en alt text below), referencing media already uploaded
-to the library by scripts/upload-media.sh (content-source/media-upload-map.json).
+to the library by scripts/upload-media.py (content-source/media-upload-map.<site>.json).
 
 Why a script, not seed.json: media ids differ per database, so image blocks in
 the seed would point at nothing on a fresh install. GenericPage renders 2+
@@ -20,20 +20,24 @@ Usage:
 
 Local (http://localhost:4321) signs in via dev-bypass; any other base URL needs an
 admin API token in EMDASH_TOKEN (Settings -> API tokens, scopes content:write and
-media:read). Run scripts/upload-media.sh against the same site first: it writes
-the media-upload-map.json this script reads.
+media:read). Run scripts/upload-media.py against the same site first: it writes
+the per-site media-upload-map.<site>.json this script reads.
 """
 
 import json
 import os
+import re
 import sys
+import urllib.error
 import urllib.request
 import http.cookiejar
 from pathlib import Path
 
-BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:4321"
+BASE_URL = (sys.argv[1] if len(sys.argv) > 1 else "http://localhost:4321").rstrip("/")
 ROOT = Path(__file__).resolve().parent.parent
-MAP_FILE = ROOT / "content-source" / "media-upload-map.json"
+SITE = re.sub(r"[^a-z0-9]+", "-", BASE_URL.lower()).strip("-")
+# Per-site map written by scripts/upload-media.py
+MAP_FILE = ROOT / "content-source" / f"media-upload-map.{SITE}.json"
 
 # (filename, order, fi alt, en alt)
 # Excludes: licensed stock photos (9462219.jpeg, 30176423.jpeg), the two
@@ -156,6 +160,8 @@ def main():
         print(f"Set EMDASH_TOKEN (admin API token) to run against {BASE_URL}", file=sys.stderr)
         sys.exit(1)
 
+    if not MAP_FILE.exists():
+        sys.exit(f"{MAP_FILE.name} not found: run scripts/upload-media.py against {BASE_URL} first")
     media = json.loads(MAP_FILE.read_text())
 
     jar = http.cookiejar.CookieJar()
@@ -168,12 +174,17 @@ def main():
         req = urllib.request.Request(f"{BASE_URL}{path}", data=data, method=method)
         req.add_header("X-EmDash-Request", "1")
         req.add_header("Origin", BASE_URL)
+        # Cloudflare bot protection tends to 403 the default "Python-urllib" agent.
+        req.add_header("User-Agent", "minnahoitaa-setup-scripts/1.0")
         if token:
             req.add_header("Authorization", f"Bearer {token}")
         if data is not None:
             req.add_header("Content-Type", "application/json")
-        with opener.open(req) as resp:
-            return json.loads(resp.read())
+        try:
+            with opener.open(req) as resp:
+                return json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            sys.exit(f"{method} {path} -> HTTP {e.code}: {e.read().decode(errors='replace')[:500]}")
 
     pages = api("GET", "/_emdash/api/content/pages?limit=100")["data"]["items"]
     for locale, alt_index in (("fi", 2), ("en", 3)):
