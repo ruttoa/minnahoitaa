@@ -6,6 +6,7 @@
 // on linked cards, which is what the original design sanctions).
 // Icons: MarketingIcon (includes the pets/cleaning/garden service glyphs).
 import MarketingIcon from "./MarketingIcon.astro";
+import { resolveHref } from "./links";
 
 interface Props {
 	node: {
@@ -40,20 +41,21 @@ const { _key, headline, subheadline, features } = node;
 		<div class="marketing-features__grid" data-reveal-group>
 			{
 				features.map((feature) => {
-					const Card = feature.linkUrl ? "a" : "div";
+					const href = resolveHref(feature.linkUrl, Astro.currentLocale);
+					const Card = href ? "a" : "div";
 					return (
 						<div data-reveal>
 							<Card
-								class:list={["marketing-features__card", { "marketing-features__card--link": !!feature.linkUrl }]}
-								href={feature.linkUrl || undefined}
+								class:list={["marketing-features__card", { "marketing-features__card--link": !!href }]}
+								href={href}
 							>
-								{feature.linkUrl && <span class="marketing-features__glow" aria-hidden="true" />}
+								{href && <span class="marketing-features__glow" aria-hidden="true" />}
 								<span class="marketing-features__icon">
 									<MarketingIcon icon={feature.icon} />
 								</span>
 								<h3 class="marketing-features__title">{feature.title}</h3>
 								<p class="marketing-features__description">{feature.description}</p>
-								{feature.linkUrl && feature.linkLabel && (
+								{href && feature.linkLabel && (
 									<span class="marketing-features__cta">{feature.linkLabel}</span>
 								)}
 							</Card>

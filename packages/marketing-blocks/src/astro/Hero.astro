@@ -1,30 +1,32 @@
 ---
 // Custom Portable Text block (_type: "marketing.hero"). Re-themed from the
-// emdash repo's marketing-theme original to reproduce this site's own two
-// "hero-like" sections from one block:
-//   - the homepage hero (src/components/Hero.astro): two columns, big <h1>,
-//     portrait area with the lamp glow, staggered load reveal
-//   - the closing call-to-action band (src/components/ContactBand.astro):
-//     centered, dark background band, no image
-// GenericPage passes `asH1: true` to the first block of a page when it's a
-// hero, so it becomes the page's <h1> (and the page's own title header is
-// skipped); any other hero is an <h2> -- one <h1> per page.
-// The same block also reproduces the services page's sections
-// (ServiceSection.astro) in the "wide" media shape: icon chip above the
-// heading, body paragraphs, bullet list, media area beside the text (image, or
-// the big icon glyph with the ambient lamp glow when there is no image).
+// emdash repo's marketing-theme original to reproduce three looks from one
+// block:
+//   - the page-opening hero (`portrait` shape): two columns, big <h1>, 4:5
+//     media area, staggered load reveal
+//   - service-style sections (`wide` shape): icon chip above the heading, body
+//     paragraphs, bullet list, square media area beside the text
+//   - a call-to-action band (`centered` + `dark`): centered, no media
+// Media area: the picked image fills it (object-fit: cover); with no image it
+// shows the icon glyph (own ambient glow) or, with no icon either, the lamp
+// glow as a placeholder -- never a glow on top of a picture.
+// Heading level: the editor's `headingLevel` (h1 default | h2) is what renders.
+// GenericPage keeps the page at one <h1> by rewriting `headingLevel` to "h2"
+// on every hero except the page-opening one, so the tag here needs no other
+// input. The h1 hero also gets the page-opening spacing and reveal.
 // Each block owns its container (.l-container), because GenericPage no longer
-// wraps blocks in one: full-bleed bands (`dark`) need the full page width.
+// wraps blocks in one: full-bleed bands (`dark`, `white`) need the full page
+// width.
 import Button from "../../../../src/components/Button.astro";
 import { Image } from "emdash/ui";
 import MarketingIcon from "./MarketingIcon.astro";
+import { resolveHref } from "./links";
 
 interface Props {
 	node: {
 		_key?: string;
 		headline: string;
-		// Heading level chosen in the editor (`headingLevel`, h1 default) is
-		// resolved by GenericPage into `asH1` -- see below.
+		headingLevel?: "h1" | "h2";
 		icon?: string;
 		// Body text: paragraphs separated by line breaks. (Field name kept from
 		// when this was a single "subheadline" line.)
@@ -41,27 +43,28 @@ interface Props {
 		dark?: boolean;
 		// White full-bleed band (ignored when `dark` is set).
 		white?: boolean;
-		// Portrait area (4:5, lamp glow behind/around the image). Shown even
-		// without an image -- the glow alone is the current homepage design.
-		// No media picker in the plugin-block editor yet, so the image is a
-		// hand-entered URL rendered with a plain <img>, not emdash/ui's <Image>.
+		// Media area beside the text. Not used in the `centered` layout (which
+		// has no media column), even if this is ticked.
 		showImage?: boolean;
 		// "portrait" (default): homepage-hero look -- 4:5 area, lead-size text.
 		// "wide": service-section look -- media fills the text's height (min
 		// 16rem), body-size text.
 		mediaShape?: "portrait" | "wide";
 		mediaLeft?: boolean;
+		// From the editor's media picker: just the picked file's URL (no media
+		// id / size), rendered as an <img> that covers the whole media area.
+		// An <img> rather than a CSS background-image on purpose: it carries
+		// real alt text, and a per-instance background would need an inline
+		// style (not allowed on this site).
 		imageUrl?: string;
 		imageAlt?: string;
 		anchor?: string;
-		// Set by GenericPage, not by editors: this hero is the page's <h1>
-		// (first block, level h1) -- otherwise it renders as an <h2>.
-		asH1?: boolean;
 	};
 }
 
 const { node } = Astro.props;
-const { headline, icon, list, centered, dark, white, showImage, imageUrl, imageAlt, anchor, asH1 } = node;
+const { headline, icon, list, centered, dark, white, showImage, imageUrl, imageAlt, anchor } = node;
+const asH1 = node.headingLevel !== "h2";
 const shape = node.mediaShape === "wide" ? "wide" : "portrait";
 const paragraphs = (node.subheadline ?? "")
 	.split("\n")
@@ -72,14 +75,14 @@ const items = (list ?? []).map((i) => i.text).filter(Boolean);
 
 const Heading = asH1 ? "h1" : "h2";
 
-const primaryCta =
-	node.primaryCtaLabel && node.primaryCtaUrl
-		? { label: node.primaryCtaLabel, url: node.primaryCtaUrl }
-		: undefined;
-const secondaryCta =
-	node.secondaryCtaLabel && node.secondaryCtaUrl
-		? { label: node.secondaryCtaLabel, url: node.secondaryCtaUrl }
-		: undefined;
+// URLs go through resolveHref: unsafe schemes are dropped (no CTA is rendered)
+// and `@contact` resolves to the localized contact page.
+const cta = (label?: string, url?: string) => {
+	const href = label ? resolveHref(url, Astro.currentLocale) : undefined;
+	return label && href ? { label, url: href } : undefined;
+};
+const primaryCta = cta(node.primaryCtaLabel, node.primaryCtaUrl);
+const secondaryCta = cta(node.secondaryCtaLabel, node.secondaryCtaUrl);
 
 const media = showImage && !centered;
 ---

@@ -6,6 +6,7 @@
 // The one deliberate coupling to the host site: CTAs reuse its Button so they
 // match every other button (Astro scopes Button.astro's styles to its own markup).
 import Button from "../../../../src/components/Button.astro";
+import { resolveHref } from "./links";
 
 interface RawPlan {
 	name: string;
@@ -45,7 +46,7 @@ const plans = rawPlans.map((plan) => ({
 		.filter(Boolean),
 	cta: {
 		label: plan.ctaLabel ?? "",
-		url: plan.ctaUrl ?? "#",
+		url: resolveHref(plan.ctaUrl, Astro.currentLocale) ?? "#",
 	},
 }));
 ---

@@ -11,9 +11,10 @@
 // are grouped into one prose section with a narrow reading column.
 //
 // Heading: normally PageLayout renders the entry title as the <h1>. If the
-// content starts with a marketing.hero block, that hero becomes the <h1>
-// instead (the block gets `asH1`) and the title header is skipped, so the
-// page has one <h1> and the hero isn't preceded by a duplicate title.
+// content starts with a marketing.hero block left at level h1, that hero is
+// the <h1> instead and the title header is skipped, so the page has one <h1>
+// and the hero isn't preceded by a duplicate title. All other heroes are
+// rewritten to `headingLevel: "h2"` before rendering.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageLayout from "../../layouts/PageLayout.astro";
 import { PortableText } from "emdash/ui";
@@ -51,8 +52,10 @@ const isMarketing = (b: Block) => typeof b._type === "string" && b._type.startsW
 const first = (entry?.data.content ?? [])[0] as Block | undefined;
 const heroFirst = first?._type === "marketing.hero" && (first.headingLevel ?? "h1") === "h1";
 
+// Every hero except the page-opening one is forced to h2 (Hero renders the tag
+// straight from `headingLevel`), so pages keep exactly one <h1>.
 const withH1 = ((entry?.data.content ?? []) as Block[]).map((b, i) =>
-	i === 0 && heroFirst ? { ...b, asH1: true } : b,
+	b._type === "marketing.hero" && !(i === 0 && heroFirst) ? { ...b, headingLevel: "h2" } : b,
 );
 
 // 2+ consecutive `image` blocks become one synthetic `gallery` block (rendered

@@ -1,12 +1,13 @@
 ---
 import GenericPage from "../components/pages/GenericPage.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { getPageEntry } from "../lib/pages";
+import { getPageEntry, looksLikeFile } from "../lib/pages";
 import { isLocale, defaultLocale } from "../i18n/ui";
 
 const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
 // The homepage lives at / (and /en/); its entry's own slug is not a public URL.
 if (Astro.params.slug === "etusivu") return Astro.redirect(getRelativeLocaleUrl(locale, "/"), 301);
+if (looksLikeFile(Astro.params.slug)) return new Response(null, { status: 404 });
 const { entry, cacheHint, redirectTo } = await getPageEntry(Astro.params.slug, locale);
 if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
 if (redirectTo) return Astro.redirect(redirectTo);

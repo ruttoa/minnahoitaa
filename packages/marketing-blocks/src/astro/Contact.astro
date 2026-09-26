@@ -8,7 +8,7 @@
 // site's ContactForm (theming + accessible error summary + privacy link),
 // i18n labels (`contact.*Label`) and phone formatting. The locale comes from
 // Astro.currentLocale since blocks receive no `locale` prop.
-import { getEmDashCollection } from "emdash";
+import { getBusinessInfo } from "../../../../src/lib/business-info";
 import ContactForm from "../../../../src/components/ContactForm.astro";
 import { useTranslations, isLocale, defaultLocale } from "../../../../src/i18n/ui";
 import { formatPhoneDisplay } from "../../../../src/lib/format";
@@ -30,7 +30,7 @@ const { _key, note, formHeading, formId } = node;
 const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
 const t = useTranslations(locale);
 
-const { entries, cacheHint } = await getEmDashCollection("business_info", { locale, limit: 1 });
+const { entries, cacheHint } = await getBusinessInfo(Astro.locals, locale);
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 const info = entries[0]?.data;
 

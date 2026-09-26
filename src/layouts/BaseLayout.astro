@@ -2,7 +2,7 @@
 import "../styles/main.scss";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/atkinson-hyperlegible-next";
-import { getSiteSettings, getEmDashCollection } from "emdash";
+import { getSiteSettings } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { getRelativeLocaleUrl } from "astro:i18n";
@@ -12,6 +12,7 @@ import SiteFooter from "../components/SiteFooter.astro";
 import ScrollReveal from "../components/ScrollReveal.astro";
 import { locales, isLocale, useTranslations, defaultLocale } from "../i18n/ui";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { getBusinessInfo } from "../lib/business-info";
 
 interface Props {
 	title: string;
@@ -47,7 +48,7 @@ const pageCtx = createPublicPageContext({
 const currentPath = Astro.url.pathname;
 const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
 
-const { entries: businessInfoEntries } = await getEmDashCollection("business_info", { locale, limit: 1 });
+const { entries: businessInfoEntries } = await getBusinessInfo(Astro.locals, locale);
 const info = businessInfoEntries[0]?.data;
 
 const localBusinessLd = {

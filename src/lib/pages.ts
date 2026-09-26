@@ -14,6 +14,16 @@ import { defaultLocale, locales, type Locale } from "../i18n/ui";
  * route, a slug that exists only in another locale (e.g. a page created in
  * English) returns `redirectTo` for that locale's URL instead of a 404.
  */
+/**
+ * True for paths that look like a static asset request (`/wp-login.php`,
+ * `/apple-touch-icon.png`, `/a/b.js`): page slugs never contain a file
+ * extension, so the routes answer these with a bare 404 instead of doing
+ * entry lookups and rendering the full 404 page for every bot probe.
+ */
+export function looksLikeFile(slug: string | undefined): boolean {
+	return !!slug && /\.[a-z0-9]{1,8}$/i.test(slug);
+}
+
 export async function getPageEntry(slug: string | undefined, locale: Locale) {
 	if (!slug) return { entry: null, cacheHint: undefined, redirectTo: undefined };
 

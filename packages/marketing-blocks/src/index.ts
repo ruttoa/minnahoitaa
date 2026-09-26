@@ -88,7 +88,12 @@ const definition: PluginDefinition = {
 						fields: [{ type: "text_input", action_id: "text", label: "Text" }],
 					},
 					{ type: "text_input", action_id: "primaryCtaLabel", label: "Primary CTA label" },
-					{ type: "text_input", action_id: "primaryCtaUrl", label: "Primary CTA URL" },
+					{
+						type: "text_input",
+						action_id: "primaryCtaUrl",
+						label: "Primary CTA URL",
+						placeholder: "/path, https://…, or @contact for the contact page",
+					},
 					{
 						type: "text_input",
 						action_id: "secondaryCtaLabel",
@@ -98,7 +103,7 @@ const definition: PluginDefinition = {
 					{ type: "toggle", action_id: "centered", label: "Center the layout" },
 					{ type: "toggle", action_id: "dark", label: "Dark background band" },
 					{ type: "toggle", action_id: "white", label: "White background band" },
-					{ type: "toggle", action_id: "showImage", label: "Show image area" },
+					{ type: "toggle", action_id: "showImage", label: "Show image area (not in the centered layout)" },
 					{
 						type: "select",
 						action_id: "mediaShape",
