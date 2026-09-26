@@ -10,10 +10,14 @@
 			"database_name": "minnahoitaa",
 		},
 	],
+	// The bucket must be created by hand *before* the first deploy (see README,
+	// "Deploying to Cloudflare"): auto-provisioning picks no location, and a
+	// bucket's jurisdiction can't be changed afterwards.
 	"r2_buckets": [
 		{
 			"binding": "MEDIA",
 			"bucket_name": "minnahoitaa-media",
+			"jurisdiction": "eu",
 		},
 	],
 	// No "worker_loaders" (LOADER) binding: it's only for *sandboxed* plugins

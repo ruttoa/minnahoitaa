@@ -15,6 +15,7 @@ export interface BusinessInfo {
   whatsapp_e164?: string;
   business_id: string;
   service_area: string;
+  price_range?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

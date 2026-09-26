@@ -80,6 +80,19 @@ Run `upload-media.sh` before `populate-gallery.py` (it writes the media-id map t
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
 ```
 
+## Deploying to Cloudflare
+
+Create the storage in the EU **before the first `pnpm deploy`**. Wrangler would otherwise auto-provision the D1 database and R2 bucket with no location choice, and neither can be moved afterwards:
+
+```bash
+npx wrangler r2 bucket create minnahoitaa-media --jurisdiction eu   # hard EU guarantee
+npx wrangler d1 create minnahoitaa --location weur                  # location hint (D1 has no jurisdiction)
+```
+
+`wrangler.jsonc` already has `"jurisdiction": "eu"` on the `MEDIA` binding; it must match how the bucket was created, or the binding won't find it. (`--jurisdiction` and `--location` can't be combined on a bucket. If you'd rather use a location hint, create with `--location weur` and remove `jurisdiction` from the config.) The names must equal `bucket_name`/`database_name` in `wrangler.jsonc`.
+
+After the first deploy, finish the setup wizard at `/_emdash/admin`, then load content with the remote-mode scripts (see "Reseeding from scratch").
+
 ## Project structure
 
 ```
