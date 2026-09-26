@@ -380,11 +380,17 @@ const media = showImage && !centered;
 				opacity: 0.35;
 			}
 
-			svg {
+			// The <svg> is rendered by the child MarketingIcon/ServiceIcon component, so
+			// it has no scope attribute and a plain `svg` selector here never matched it
+			// (hence :global). Give it an explicit size: it has only a viewBox, and
+			// without width/height iOS Safari sizes it to 0 as a flex item (invisible)
+			// while desktop Chrome happened to stretch it. Fills the area, as the old
+			// services page's glyph did; the aspect-ratio supplies the height.
+			:global(svg) {
 				position: relative;
-				width: 5rem;
-				height: 5rem;
-				stroke-width: 1;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 1 / 1;
 			}
 		}
 
