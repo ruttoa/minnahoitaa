@@ -1,0 +1,133 @@
+---
+// Custom Portable Text block (_type: "marketing.contact"): the company's
+// contact details on the left (read from the `business_info` collection, so a
+// changed phone number updates everywhere) and one of the site's forms on the
+// right. Replaces the former ContactPage template.
+//
+// Coupled to the host site on purpose (like Button in Hero): it reuses the
+// site's ContactForm (theming + accessible error summary + privacy link),
+// i18n labels (`contact.*Label`) and phone formatting. The locale comes from
+// Astro.currentLocale since blocks receive no `locale` prop.
+import { getEmDashCollection } from "emdash";
+import ContactForm from "../../../../src/components/ContactForm.astro";
+import { useTranslations, isLocale, defaultLocale } from "../../../../src/i18n/ui";
+import { formatPhoneDisplay } from "../../../../src/lib/format";
+
+interface Props {
+	node: {
+		_key?: string;
+		// Editor-authored lead-in above the details (e.g. the response time).
+		note?: string;
+		formHeading?: string;
+		// Form to embed; empty = the per-locale contact form.
+		formId?: string;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, note, formHeading, formId } = node;
+
+const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
+const t = useTranslations(locale);
+
+const { entries, cacheHint } = await getEmDashCollection("business_info", { locale, limit: 1 });
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const info = entries[0]?.data;
+
+const telHref = info ? `tel:${info.phone_e164}` : undefined;
+const mailHref = info ? `mailto:${info.email}` : undefined;
+const whatsappHref = info?.whatsapp_e164 ? `https://wa.me/${info.whatsapp_e164.replace("+", "")}` : undefined;
+---
+
+<section class="marketing-contact l-container" id={_key}>
+	{
+		info && (
+			<aside class="marketing-contact__details" aria-label={t("contact.detailsLabel")}>
+				{note && <p class="marketing-contact__note">{note}</p>}
+
+				<dl>
+					<div>
+						<dt>{t("contact.phoneLabel")}</dt>
+						<dd>
+							<a href={telHref}>{formatPhoneDisplay(info.phone_e164)}</a>
+						</dd>
+					</div>
+					<div>
+						<dt>{t("contact.emailLabel")}</dt>
+						<dd>
+							<a href={mailHref}>{info.email}</a>
+						</dd>
+					</div>
+					{whatsappHref && (
+						<div>
+							<dt>WhatsApp</dt>
+							<dd>
+								<a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+									{t("cta.whatsapp")}
+								</a>
+							</dd>
+						</div>
+					)}
+					<div>
+						<dt>{t("contact.serviceAreaLabel")}</dt>
+						<dd>{info.service_area}</dd>
+					</div>
+					<div>
+						<dt>{t("contact.businessIdLabel")}</dt>
+						<dd>{info.business_id}</dd>
+					</div>
+				</dl>
+			</aside>
+		)
+	}
+
+	<div class="marketing-contact__form">
+		{formHeading && <h2>{formHeading}</h2>}
+		<ContactForm locale={locale} formId={formId} />
+	</div>
+</section>
+
+<style lang="scss">
+	// Padding is bottom-only: the block normally sits right under the page's
+	// title header, which already supplies the space above (same as the old
+	// ContactPage layout).
+	.marketing-contact {
+		display: grid;
+		gap: var(--s-9);
+		padding-block: 0 var(--s-11);
+
+		@include respond(md) {
+			grid-template-columns: 1fr 1.3fr;
+			align-items: start;
+		}
+
+		&__details {
+			background: var(--c-white);
+			border: 1px solid var(--c-border);
+			border-radius: var(--s-2);
+			padding: var(--s-7);
+
+			dl {
+				display: flex;
+				flex-direction: column;
+				gap: var(--s-5);
+				margin-top: var(--s-6);
+			}
+
+			dt {
+				font-size: var(--fs-300);
+				color: var(--c-text-muted);
+				font-weight: 600;
+			}
+
+			dd a {
+				color: var(--c-spruce-600);
+				font-weight: 600;
+			}
+		}
+
+		&__note {
+			color: var(--c-text-muted);
+		}
+	}
+</style>

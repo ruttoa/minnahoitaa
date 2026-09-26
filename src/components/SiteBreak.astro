@@ -1,0 +1,44 @@
+---
+// Site styling for EmDash's built-in Portable Text `break` block (editor:
+// /divider). Registered as the `type.break` override in GenericPage. `line`
+// is the section divider (the hairline the services page used to draw as a
+// border-top on each section); `dots`/`space` mirror EmDash's defaults.
+interface Props {
+	node: { style?: "line" | "dots" | "space" };
+}
+
+const style = Astro.props.node?.style ?? "line";
+---
+
+{
+	style === "dots" ? (
+		<div class="site-break site-break--dots" aria-hidden="true">
+			• • •
+		</div>
+	) : style === "space" ? (
+		<div class="site-break site-break--space" aria-hidden="true" />
+	) : (
+		<hr class="site-break site-break--line" />
+	)
+}
+
+<style lang="scss">
+	.site-break {
+		margin-block: var(--s-6);
+
+		&--line {
+			border: 0;
+			border-top: 1px solid var(--c-border);
+		}
+
+		&--dots {
+			text-align: center;
+			color: var(--c-text-muted);
+			letter-spacing: 0.5em;
+		}
+
+		&--space {
+			height: var(--s-6);
+		}
+	}
+</style>

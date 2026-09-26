@@ -1,5 +1,20 @@
 ---
-import HomePage from "../components/pages/HomePage.astro";
+import GenericPage from "../components/pages/GenericPage.astro";
+import { getPageEntry } from "../lib/pages";
+import { useTranslations, isLocale, defaultLocale } from "../i18n/ui";
+
+// The homepage is the `etusivu` entry in the `pages` collection (a stack of
+// marketing.* blocks), rendered by the same GenericPage as every other page.
+const locale = isLocale(Astro.currentLocale) ? Astro.currentLocale : defaultLocale;
+const t = useTranslations(locale);
+const { entry, cacheHint } = await getPageEntry("etusivu", locale);
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+if (!entry) Astro.response.status = 404;
 ---
 
-<HomePage />
+<GenericPage
+	locale={locale}
+	entry={entry}
+	title={t("pages.homeTitle")}
+	description={t("meta.defaultDescription")}
+/>

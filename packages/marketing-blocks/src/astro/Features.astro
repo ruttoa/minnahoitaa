@@ -1,0 +1,191 @@
+---
+// Custom Portable Text block (_type: "marketing.features"). Reproduces the
+// homepage's services triptych (ServiceCard grid): centered heading, three
+// cards, optional per-card link rendered like ServiceCard (whole card is the
+// link, "→" call-to-action, lamp glow on hover/focus -- the glow only appears
+// on linked cards, which is what the original design sanctions).
+// Icons: MarketingIcon (includes the pets/cleaning/garden service glyphs).
+import MarketingIcon from "./MarketingIcon.astro";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		subheadline?: string;
+		features: Array<{
+			icon: string;
+			title: string;
+			description: string;
+			// Flat sibling fields (repeaters are scalar-only in Block Kit).
+			linkUrl?: string;
+			linkLabel?: string;
+		}>;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, subheadline, features } = node;
+---
+
+<section class="marketing-features l-section" id={_key}>
+	<div class="l-container">
+		{
+			(headline || subheadline) && (
+				<header class="marketing-features__header">
+					{headline && <h2>{headline}</h2>}
+					{subheadline && <p class="marketing-features__subheadline">{subheadline}</p>}
+				</header>
+			)
+		}
+		<div class="marketing-features__grid" data-reveal-group>
+			{
+				features.map((feature) => {
+					const Card = feature.linkUrl ? "a" : "div";
+					return (
+						<div data-reveal>
+							<Card
+								class:list={["marketing-features__card", { "marketing-features__card--link": !!feature.linkUrl }]}
+								href={feature.linkUrl || undefined}
+							>
+								{feature.linkUrl && <span class="marketing-features__glow" aria-hidden="true" />}
+								<span class="marketing-features__icon">
+									<MarketingIcon icon={feature.icon} />
+								</span>
+								<h3 class="marketing-features__title">{feature.title}</h3>
+								<p class="marketing-features__description">{feature.description}</p>
+								{feature.linkUrl && feature.linkLabel && (
+									<span class="marketing-features__cta">{feature.linkLabel}</span>
+								)}
+							</Card>
+						</div>
+					);
+				})
+			}
+		</div>
+	</div>
+</section>
+
+<style lang="scss">
+	.marketing-features {
+		&__header {
+			text-align: center;
+			margin-bottom: var(--s-8);
+		}
+
+		&__subheadline {
+			font-size: var(--fs-500);
+			color: var(--c-text-muted);
+			margin: var(--s-3) auto 0;
+		}
+
+		&__grid {
+			display: grid;
+			gap: var(--s-6);
+			align-items: stretch;
+
+			@include respond(md) {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		&__card {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			gap: var(--s-3);
+			padding: var(--s-7);
+			background: var(--c-white);
+			border: 1px solid var(--c-border);
+			border-radius: var(--s-2);
+			text-decoration: none;
+			color: var(--c-text);
+			overflow: hidden;
+			transition: border-color var(--dur-medium) var(--ease-standard);
+
+			&--link:hover,
+			&--link:focus-visible {
+				border-color: var(--c-lamp-500);
+
+				.marketing-features__glow {
+					opacity: 1;
+				}
+			}
+		}
+
+		&__glow {
+			position: absolute;
+			top: -20%;
+			left: 90%;
+			width: 14rem;
+			height: 14rem;
+			transform: translateX(-50%);
+			background: radial-gradient(circle, var(--c-lamp-500) 0%, transparent 70%);
+			filter: blur(2.5rem);
+			opacity: 0;
+			pointer-events: none;
+			z-index: 0;
+
+			@include reduced-motion {
+				transition: opacity var(--dur-slow) var(--ease-standard);
+			}
+		}
+
+		&__icon {
+			position: relative;
+			z-index: 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 3rem;
+			height: 3rem;
+			border-radius: 50%;
+			background: var(--c-frost-050);
+			color: var(--c-spruce-600);
+
+			svg {
+				width: 1.5rem;
+				height: 1.5rem;
+			}
+		}
+
+		&__title {
+			position: relative;
+			z-index: 1;
+			font-size: var(--fs-600);
+			line-height: var(--lh-600);
+		}
+
+		&__description {
+			position: relative;
+			z-index: 1;
+			color: var(--c-text-muted);
+			max-width: none;
+		}
+
+		&__cta {
+			position: relative;
+			z-index: 1;
+			margin-top: auto;
+			padding-top: var(--s-3);
+			font-weight: 700;
+			color: var(--c-spruce-600);
+
+			&::after {
+				content: "→";
+				margin-left: var(--s-2);
+				display: inline-block;
+				transition: transform var(--dur-fast) var(--ease-standard);
+			}
+		}
+
+		&__card--link:hover &__cta::after,
+		&__card--link:focus-visible &__cta::after {
+			transform: translateX(0.25em);
+		}
+	}
+
+	.marketing-hero + .marketing-features {
+		padding-top: 0;
+	}
+</style>

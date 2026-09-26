@@ -41,7 +41,9 @@ pnpm approve-builds --all
 
 Visit `http://localhost:4321/_emdash/admin`. First visit walks through a setup wizard: site title/tagline, an admin account (email), then a **passkey** (Touch ID / security key / PIN) — this step needs a real device present, it can't be scripted.
 
-Once set up, the client (or any editor) manages all copy, pricing, testimonials, gallery images, and site settings from there — see [PLAN.md §4](PLAN.md) for the content model. Nothing editorial should be hardcoded in `.astro` templates; if you find yourself typing Finnish prose into a component, it belongs in EmDash instead (or in `src/i18n/*.json` if it's a UI string like a button label, not editorial content).
+**Logging in locally without a passkey**: if the dev server gets restarted (e.g. after wiping `.wrangler/state`) and `/_emdash/admin` asks for a passkey you don't have registered on this machine, visit `http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin` instead — it signs you in and sets a session cookie without the passkey step. Local dev only, never available against a real deployment. This is the same route the admin-API scripts (`upload-media.sh`, `populate-gallery.py`, `setup-contact-form.sh`) use to authenticate themselves.
+
+Once set up, the client (or any editor) manages all copy (as page blocks), gallery images, and site settings from there — see [PLAN.md §4](PLAN.md) for the content model. Nothing editorial should be hardcoded in `.astro` templates; if you find yourself typing Finnish prose into a component, it belongs in EmDash instead (or in `src/i18n/*.json` if it's a UI string like a button label, not editorial content).
 
 ### Reseeding from scratch
 
@@ -61,7 +63,7 @@ Then sign in once via `http://localhost:4321/_emdash/api/setup/dev-bypass?redire
 
 to recreate the contact form. **The contact form is not part of `seed/seed.json`** — it's configured through the `@emdash-cms/plugin-forms` admin API, which has no seed-file integration, so this script is the only way to reproduce it. See [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms) for why, and for two plugin bugs worked around in `src/components/ContactForm.astro`.
 
-The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` publishes the curated `gallery_items` referencing them — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` is **not idempotent**; re-running it creates duplicates.
+The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
 
 ```bash
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
@@ -88,10 +90,13 @@ src/
                    format.ts (price/phone formatting)
 content-source/    Archived old-site text + images for reference (gitignored, not
                    part of the build — see docs/media-credits.md for licensing)
+packages/          marketing-blocks/ — site-local EmDash plugin (hero/features/
+                   testimonials/pricing/FAQ blocks for the page editor); linked
+                   into node_modules via `pnpm add link:` (see AGENTS.md)
 scripts/           setup-contact-form.sh + contact-form.json — recreates the
                    contact form after a reseed (see "Reseeding from scratch" above);
                    upload-media.sh + populate-gallery.py — upload archived photos
-                   to the media library and publish the curated gallery_items
+                   to the media library and build the gallery page from them
                    (see docs/media-credits.md)
 ```
 
@@ -131,7 +136,7 @@ Checked against [PLAN.md §10](PLAN.md)'s Definition of Done, against the dev se
 - **Privacy statement** (`/tietosuoja/`) is a draft — flagged on the page itself, needs legal review before going live.
 - **Contact form email delivery** hasn't been confirmed end-to-end — submissions confirmed landing in the admin, but whether the notification email actually reaches `minna.petsitter@gmail.com` needs a live check (see [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms)).
 - **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
-- **Gallery photos**: 26 of the 31 archived photos are published as bilingual `gallery_items` (see `scripts/populate-gallery.py` and `docs/media-credits.md` for the exclusions and two flagged photos worth a second look before launch). `services.image` is still unset for all three services.
+- **Gallery photos**: 26 of the 31 archived photos are `image` blocks on the `galleria` page (see `scripts/populate-gallery.py` and `docs/media-credits.md` for the exclusions and two flagged photos worth a second look before launch).
 - **English content**: real translations throughout (not machine-translated placeholders), but nobody's proofread them against the client's actual voice — a native-speaker pass before launch would be worthwhile.
 - **Screen-reader pass**: not performed (no VoiceOver/NVDA available in this environment) — do this before launch, especially on the contact form and mobile nav.
 - **Production-build validation**: Lighthouse/W3C/QA above all ran against the local dev server, not an actual `wrangler`-served production build — re-run at least Lighthouse against the real deployment once it exists.

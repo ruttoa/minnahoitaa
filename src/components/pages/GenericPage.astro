@@ -1,0 +1,234 @@
+---
+// Shared body for the `/[...slug]` and `/en/[...slug]` catch-all routes.
+// Renders any published `pages` entry that isn't handled by a more specific
+// route (Astro prioritizes static/index routes over this catch-all, so
+// /palvelut/, /hinnasto/, /tietosuoja/, etc. are unaffected).
+//
+// Layout model: a page's Portable Text is split into runs. Each marketing.*
+// block renders on its own and owns its section, background and container
+// (a dark band has to be full-bleed, so blocks can't sit inside a shared
+// .l-container). Consecutive ordinary blocks (headings, paragraphs, lists...)
+// are grouped into one prose section with a narrow reading column.
+//
+// Heading: normally PageLayout renders the entry title as the <h1>. If the
+// content starts with a marketing.hero block, that hero becomes the <h1>
+// instead (the block gets `asH1`) and the title header is skipped, so the
+// page has one <h1> and the hero isn't preceded by a duplicate title.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageLayout from "../../layouts/PageLayout.astro";
+import { PortableText } from "emdash/ui";
+import NotFoundPage from "./NotFoundPage.astro";
+import SiteTable from "../SiteTable.astro";
+import SiteBreak from "../SiteBreak.astro";
+import SiteGallery from "../SiteGallery.astro";
+import type { Locale } from "../../i18n/ui";
+
+// Presentational only: the route files (src/pages/[...slug].astro and the en/
+// twin) do the lookup and set the 404 status -- see src/lib/pages.ts.
+interface Props {
+	locale: Locale;
+	// Overrides for the <title> / meta description (the homepage keeps its
+	// site-name title and default description rather than the entry title).
+	title?: string;
+	description?: string | null;
+	entry: { id: string; data: { id: string; title: string; intro?: string; content?: unknown[] } } | null;
+}
+
+const { locale, entry, title, description } = Astro.props;
+
+type Block = { _type?: string } & Record<string, unknown>;
+type Run =
+	| { kind: "prose"; blocks: Block[] }
+	| { kind: "divider"; blocks: Block[] }
+	| { kind: "gallery"; block: Block }
+	| { kind: "block"; block: Block };
+
+const isMarketing = (b: Block) => typeof b._type === "string" && b._type.startsWith("marketing.");
+
+// One <h1> per page: the first block, if it's a hero left at (or set to) level
+// h1, is the page title and replaces the PageLayout title header. Any other
+// hero renders as an <h2> even if h1 was picked in the editor.
+const first = (entry?.data.content ?? [])[0] as Block | undefined;
+const heroFirst = first?._type === "marketing.hero" && (first.headingLevel ?? "h1") === "h1";
+
+const withH1 = ((entry?.data.content ?? []) as Block[]).map((b, i) =>
+	i === 0 && heroFirst ? { ...b, asH1: true } : b,
+);
+
+// 2+ consecutive `image` blocks become one synthetic `gallery` block (rendered
+// as a grid by SiteGallery); a lone image stays an ordinary image.
+const source: Block[] = [];
+for (let i = 0; i < withH1.length; ) {
+	if (withH1[i]._type !== "image") {
+		source.push(withH1[i++]);
+		continue;
+	}
+	let j = i;
+	while (j < withH1.length && withH1[j]._type === "image") j++;
+	if (j - i >= 2) source.push({ _type: "gallery", _key: `gallery-${String(withH1[i]._key)}`, images: withH1.slice(i, j) });
+	else source.push(withH1[i]);
+	i = j;
+}
+
+const runs: Run[] = [];
+for (const block of source) {
+	if (isMarketing(block)) {
+		runs.push({ kind: "block", block });
+	} else if (block._type === "gallery") {
+		runs.push({ kind: "gallery", block });
+	} else {
+		const last = runs[runs.length - 1];
+		if (last?.kind === "prose") last.blocks.push(block);
+		else runs.push({ kind: "prose", blocks: [block] });
+	}
+}
+
+// EmDash's built-in `table` block (editor: /table) rendered with site styling.
+const components = { type: { table: SiteTable, break: SiteBreak, gallery: SiteGallery } };
+
+// The editor always leaves a trailing empty paragraph; a run of nothing but
+// empty paragraphs would render as a blank band, so drop it.
+const isEmptyParagraph = (b: Block) =>
+	b._type === "block" &&
+	((b.children as Array<{ text?: string }> | undefined) ?? []).every((c) => !c.text?.trim());
+for (let i = runs.length - 1; i >= 0; i--) {
+	const run = runs[i];
+	if (run.kind === "prose" && run.blocks.every(isEmptyParagraph)) runs.splice(i, 1);
+}
+
+// A run made only of dividers is drawn bare (a full-width hairline between
+// section blocks), not as a padded prose column/band.
+for (const run of runs) {
+	if (run.kind === "prose" && run.blocks.every((b) => b._type === "break")) {
+		(run as { kind: string }).kind = "divider";
+	}
+}
+
+const pageContent = entry ? { collection: "pages", id: entry.data.id, slug: entry.id } : undefined;
+---
+
+{
+	!entry ? (
+		<NotFoundPage locale={locale} />
+	) : heroFirst ? (
+		<BaseLayout title={title ?? entry.data.title} description={description} content={pageContent}>
+			{runs.map((run) =>
+				run.kind === "block" ? (
+					<PortableText value={[run.block]} />
+				) : run.kind === "gallery" ? (
+					<div class="l-container generic-gallery">
+						<PortableText value={[run.block]} components={components} />
+					</div>
+				) : run.kind === "divider" ? (
+					<div class="generic-divider">
+						<PortableText value={run.blocks} components={components} />
+					</div>
+				) : (
+					<section class="generic-page-band l-section">
+						<div class="l-container generic-page">
+							<PortableText value={run.blocks} components={components} />
+						</div>
+					</section>
+				),
+			)}
+		</BaseLayout>
+	) : (
+		<PageLayout
+			title={title ?? entry.data.title}
+			heading={entry.data.title}
+			intro={entry.data.intro}
+			description={description}
+			content={pageContent}
+		>
+			{runs.map((run, i) =>
+				run.kind === "block" ? (
+					<PortableText value={[run.block]} />
+				) : run.kind === "gallery" ? (
+					<div class:list={["l-container", "generic-gallery", { "generic-gallery--first": i === 0 }]}>
+						<PortableText value={[run.block]} components={components} />
+					</div>
+				) : run.kind === "divider" ? (
+					<div class="generic-divider">
+						<PortableText value={run.blocks} components={components} />
+					</div>
+				) : i === 0 ? (
+					<div class="l-container generic-page generic-page--first">
+						<PortableText value={run.blocks} components={components} />
+					</div>
+				) : (
+					<section class="generic-page-band l-section">
+						<div class="l-container generic-page">
+							<PortableText value={run.blocks} components={components} />
+						</div>
+					</section>
+				),
+			)}
+		</PageLayout>
+	)
+}
+
+<style lang="scss">
+	// Everything PortableText renders (headings, paragraphs, tables) comes from
+	// components outside this file's style scope, hence :global on the children.
+	.generic-page {
+		max-width: 44rem;
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-4);
+
+		// A heading that follows other content opens a new section.
+		> :global(h2:not(:first-child)) {
+			margin-top: var(--s-7);
+		}
+
+		// Text right after a table needs air (the table's last row hairline
+		// is the only separation otherwise).
+		> :global(.site-table + p) {
+			margin-top: var(--s-7);
+		}
+
+		// Directly under the PageLayout title header (which has its own bottom
+		// padding): left-aligned with the title, using the full container so
+		// tables can span it; running text keeps a readable measure.
+		&--first {
+			max-width: var(--container-max);
+			padding-block: 0 var(--s-11);
+
+			> :global(p),
+			> :global(ul),
+			> :global(ol) {
+				max-width: 44rem;
+			}
+		}
+	}
+
+	// A grid of images. Directly under the page title header there's no extra
+	// spacing (the header supplies it); anywhere else it's a spaced section.
+	.generic-gallery {
+		padding-block: var(--s-9);
+
+		&--first {
+			padding-block: 0;
+		}
+	}
+
+	// Section divider: a hairline spanning the container width (same extent as
+	// the old per-section border-top), no padding of its own -- the section
+	// blocks around it supply the spacing.
+	.generic-divider :global(.site-break) {
+		width: 100%;
+		max-width: var(--container-max);
+		margin: 0 auto;
+	}
+
+	// Prose between (or after) blocks is a full-width white band -- the site's
+	// alternating section rhythm, same look as the homepage's former "Minusta"
+	// section (.l-section supplies the padding).
+	.generic-page-band {
+		background: var(--c-white);
+
+		:global(p) {
+			color: var(--c-text-muted);
+		}
+	}
+</style>

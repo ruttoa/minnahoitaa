@@ -1,0 +1,45 @@
+---
+// Shared 404 body. Used directly by src/pages/404.astro (Astro's fallback for
+// genuinely unmatched routes) and by GenericPage.astro when a `pages` slug
+// doesn't resolve to a published entry -- rendered inline there (no redirect
+// or Astro.rewrite) so the locale already resolved from the real request URL
+// stays correct, rather than being re-derived from a rewritten target path.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../Button.astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { useTranslations, type Locale } from "../../i18n/ui";
+import { CONTACT_PATH } from "../../lib/routes";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<BaseLayout title={t("404.title")}>
+	<div class="l-container not-found">
+		<h1>{t("404.title")}</h1>
+		<p>{t("404.body")}</p>
+		<div class="not-found__actions">
+			<Button href={getRelativeLocaleUrl(locale, "/")} variant="primary">{t("404.homeLink")}</Button>
+			<Button href={getRelativeLocaleUrl(locale, CONTACT_PATH)} variant="outline">{t("404.contactLink")}</Button>
+		</div>
+	</div>
+</BaseLayout>
+
+<style lang="scss">
+	.not-found {
+		padding-block: var(--s-12);
+		text-align: center;
+
+		&__actions {
+			display: flex;
+			gap: var(--s-4);
+			justify-content: center;
+			margin-top: var(--s-7);
+			flex-wrap: wrap;
+		}
+	}
+</style>

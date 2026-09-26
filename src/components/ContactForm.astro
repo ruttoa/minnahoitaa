@@ -14,13 +14,15 @@ import { useTranslations, type Locale } from "../i18n/ui";
 
 interface Props {
 	locale: Locale;
+	// Which form to embed; defaults to the per-locale contact form.
+	formId?: string;
 }
 
-const { locale } = Astro.props;
+const { locale, formId: formIdProp } = Astro.props;
 const t = useTranslations(locale);
 const privacyHref = getRelativeLocaleUrl(locale, "tietosuoja");
 
-const formId = locale === "en" ? "contact" : "yhteydenotto";
+const formId = formIdProp || (locale === "en" ? "contact" : "yhteydenotto");
 const formBlock = [{ _type: "emdash-form", _key: "contact-form", formId }];
 ---
 

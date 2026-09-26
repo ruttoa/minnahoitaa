@@ -1,0 +1,109 @@
+---
+// Custom Portable Text block (_type: "marketing.testimonials"). Reproduces
+// the homepage's TestimonialStrip: centered heading, white bordered cards,
+// lamp-coloured quote marks, author as <cite> in the blockquote footer. The
+// blockquote's type styling (display font etc.) comes from the global
+// blockquote rules in src/styles/base/_typography.scss, same as the original.
+interface Props {
+	node: {
+		_key?: string;
+		headline?: string;
+		testimonials: Array<{
+			quote: string;
+			author: string;
+			role?: string;
+			company?: string;
+		}>;
+	};
+}
+
+const { node } = Astro.props;
+const { _key, headline, testimonials } = node;
+---
+
+<section class="marketing-testimonials l-section" id={_key}>
+	<div class="l-container">
+		{
+			headline && (
+				<header class="marketing-testimonials__header">
+					<h2>{headline}</h2>
+				</header>
+			)
+		}
+		<ul class="marketing-testimonials__grid">
+			{
+				testimonials.map((testimonial) => (
+					<li class="marketing-testimonials__item">
+						<blockquote>
+							<p>{testimonial.quote}</p>
+							<footer>
+								<cite>{testimonial.author}</cite>
+								{(testimonial.role || testimonial.company) && (
+									<span class="marketing-testimonials__role">
+										{[testimonial.role, testimonial.company].filter(Boolean).join(" · ")}
+									</span>
+								)}
+							</footer>
+						</blockquote>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style lang="scss">
+	.marketing-testimonials {
+		&__header {
+			text-align: center;
+			margin-bottom: var(--s-8);
+		}
+
+		&__grid {
+			display: grid;
+			gap: var(--s-6);
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			@include respond(md) {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		&__item {
+			background: var(--c-white);
+			border: 1px solid var(--c-border);
+			border-radius: var(--s-2);
+			padding: var(--s-6);
+
+			blockquote {
+				display: flex;
+				flex-direction: column;
+				gap: var(--s-4);
+				height: 100%;
+				margin: 0;
+			}
+
+			p {
+				flex: 1;
+				max-width: none;
+
+				&::before {
+					content: "“";
+					color: var(--c-lamp-500);
+				}
+
+				&::after {
+					content: "”";
+					color: var(--c-lamp-500);
+				}
+			}
+		}
+
+		&__role {
+			display: block;
+			font-weight: 400;
+		}
+	}
+</style>

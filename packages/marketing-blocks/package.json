@@ -1,0 +1,19 @@
+{
+  "name": "marketing-blocks-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Site-local EmDash native plugin: marketing Portable Text blocks (hero, features, testimonials, pricing, FAQ) themed to Minna hoitaa's design tokens.",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./astro": "./src/astro/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "astro": ">=6.0.0-beta.0",
+    "emdash": ">=0.11.0"
+  }
+}

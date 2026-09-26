@@ -22,90 +22,13 @@ export interface BusinessInfo {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
-export interface GalleryItem {
-  id: string;
-  slug: string | null;
-  status: string;
-  image: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
-  alt: string;
-  caption?: string;
-  order?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
 export interface Page {
   id: string;
   slug: string | null;
   status: string;
   title: string;
   content?: PortableTextBlock[];
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
-export interface PriceGroup {
-  id: string;
-  slug: string | null;
-  status: string;
-  label: string;
-  order?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
-export interface PriceItem {
-  id: string;
-  slug: string | null;
-  status: string;
-  label: string;
-  amount?: number;
-  unit?: string;
-  note?: string;
-  group: string;
-  order?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
-export interface Service {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  summary: string;
-  icon: "pets" | "cleaning" | "garden";
-  body: PortableTextBlock[];
-  bullets?: unknown;
-  image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
-  order?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
-export interface Testimonial {
-  id: string;
-  slug: string | null;
-  status: string;
-  quote: string;
-  author: string;
-  service?: string;
-  order?: number;
+  intro?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -116,11 +39,6 @@ export interface Testimonial {
 declare module "emdash" {
   interface EmDashCollections {
     business_info: BusinessInfo;
-    gallery_items: GalleryItem;
     pages: Page;
-    price_groups: PriceGroup;
-    price_items: PriceItem;
-    services: Service;
-    testimonials: Testimonial;
   }
 }

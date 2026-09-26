@@ -1,0 +1,52 @@
+---
+// Local inline-SVG icon set, matching ServiceIcon.astro's visual language
+// (stroke-based, currentColor, 1.5 stroke-width, 24x24 viewBox) instead of
+// pulling in the astro-iconset dependency the copied marketing-blocks theme
+// used -- keeps this block self-contained, consistent with how every other
+// icon on this site is drawn, and covers the fixed 12-option icon picker in
+// src/plugins/marketing-blocks/index.ts.
+// The three service icons (pets / cleaning / garden) come from the host
+// site's own ServiceIcon so the block shows exactly the same glyphs as the
+// services pages -- one source of truth, no redrawn copies.
+import ServiceIcon from "../../../../src/components/ServiceIcon.astro";
+
+interface Props {
+	icon: string;
+	class?: string;
+}
+
+const { icon, class: className } = Astro.props;
+const serviceIcon = icon === "pets" || icon === "cleaning" || icon === "garden" ? icon : undefined;
+
+const paths: Record<string, string> = {
+	zap: "M13 2 4 14h6l-1 8 9-12h-6l1-8Z",
+	shield: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z",
+	users: "M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20c0-3 2.5-5 6-5s6 2 6 5M16.5 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM15 15c2.8.3 4.5 2 4.8 5",
+	chart: "M4 20V10M10 20V4M16 20v-7M22 20H2",
+	code: "m9 8-4 4 4 4M15 8l4 4-4 4",
+	globe: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.3 5.5 3.3 9s-1.1 6.6-3.3 9c-2.2-2.4-3.3-5.5-3.3-9s1.1-6.6 3.3-9Z",
+	heart: "M12 20.5S3 15 3 9a4.5 4.5 0 0 1 9-1.5A4.5 4.5 0 0 1 21 9c0 6-9 11.5-9 11.5Z",
+	star: "m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.2 6.5 20.2l1-6.2L3 9.6l6.2-.9L12 3Z",
+	check: "M20 6 9 17l-5-5",
+	lock: "M6 11V8a6 6 0 1 1 12 0v3M5 11h14v9H5v-9Z",
+	clock: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v5l3.5 2",
+	cloud: "M7 18a4.5 4.5 0 0 1-.5-8.97A5.5 5.5 0 0 1 17.3 8.1 4 4 0 0 1 17 18H7Z",
+};
+---
+
+{serviceIcon && <ServiceIcon icon={serviceIcon} class={className} />}
+{!serviceIcon && (
+<svg
+	viewBox="0 0 24 24"
+	class={className}
+	aria-hidden="true"
+	focusable="false"
+	stroke="currentColor"
+	stroke-width="1.5"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	fill="none"
+>
+	<path d={paths[icon] ?? paths.star} />
+</svg>
+)}

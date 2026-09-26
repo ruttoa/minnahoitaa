@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
-"""Creates gallery_items entries (fi + en) for the curated set of uploaded
-client photos, via POST /_emdash/api/content/gallery_items + .../publish.
+"""Builds the gallery on the `galleria` page: one Portable Text `image` block
+per curated photo (fi + en alt text below), referencing media already uploaded
+to the library by scripts/upload-media.sh (content-source/media-upload-map.json).
 
-Why this exists: like scripts/setup-contact-form.sh and scripts/upload-media.sh,
-gallery_items content isn't reproducible from seed/seed.json here because it
-references media already uploaded to the library (see
-content-source/media-upload-map.json, produced by upload-media.sh) rather than
-re-downloading from an external URL the way seed.json's $media syntax does.
+Why a script, not seed.json: media ids differ per database, so image blocks in
+the seed would point at nothing on a fresh install. GenericPage renders 2+
+consecutive image blocks as a grid (SiteGallery.astro); editors can then add,
+remove, reorder or re-caption images with `/image` in the page editor.
 
-This is a one-time curation script, not idempotent — re-running it creates a
-second set of duplicate entries. If you need to redo this after a reseed,
-delete the existing gallery_items first (via the admin UI or the API) or don't
-re-run this script.
+Idempotent: replaces the `galleria` pages' content each time (so re-running
+discards manual edits to that content). Requires the `galleria` pages (fi + en)
+to exist (they're in the seed) and a running dev server.
 
 Usage: python3 scripts/populate-gallery.py [base-url]
-Requires content-source/media-upload-map.json to already exist (run
-upload-media.sh first) and a running dev server.
 """
 
 import json
@@ -27,7 +24,6 @@ from pathlib import Path
 BASE_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:4321"
 ROOT = Path(__file__).resolve().parent.parent
 MAP_FILE = ROOT / "content-source" / "media-upload-map.json"
-OUT_FILE = ROOT / "content-source" / "gallery-items-map.json"
 
 # (filename, order, fi alt, en alt)
 # Excludes: licensed stock photos (9462219.jpeg, 30176423.jpeg), the two
@@ -116,6 +112,22 @@ ITEMS = [
 ]
 
 
+def image_block(rec, alt, n):
+    block = {
+        "_type": "image",
+        "_key": f"img{n}",
+        "asset": {"_ref": rec["id"], "url": f"/_emdash/api/media/file/{rec['storageKey']}"},
+        "alt": alt,
+        "width": rec["width"],
+        "height": rec["height"],
+    }
+    if rec.get("blurhash"):
+        block["blurhash"] = rec["blurhash"]
+    if rec.get("dominantColor"):
+        block["dominantColor"] = rec["dominantColor"]
+    return block
+
+
 def main():
     if BASE_URL != "http://localhost:4321":
         print("Non-local base URL: supply a valid admin session cookie yourself", file=sys.stderr)
@@ -137,40 +149,20 @@ def main():
         with opener.open(req) as resp:
             return json.loads(resp.read())
 
-    results = {}
-    for filename, order, alt_fi, alt_en in ITEMS:
-        rec = media[filename]
-        image_field = {
-            "id": rec["id"],
-            "src": rec["url"],
-            "width": rec["width"],
-            "height": rec["height"],
-        }
-
-        fi_body = {
-            "locale": "fi",
-            "data": {"image": image_field, "alt": alt_fi, "order": order},
-        }
-        fi_resp = api("POST", "/_emdash/api/content/gallery_items", fi_body)
-        fi_item = fi_resp.get("data", {}).get("item", fi_resp.get("item", {}))
-        fi_id = fi_item["id"]
-        api("POST", f"/_emdash/api/content/gallery_items/{fi_id}/publish")
-
-        en_body = {
-            "locale": "en",
-            "translationOf": fi_id,
-            "data": {"image": image_field, "alt": alt_en, "order": order},
-        }
-        en_resp = api("POST", "/_emdash/api/content/gallery_items", en_body)
-        en_item = en_resp.get("data", {}).get("item", en_resp.get("item", {}))
-        en_id = en_item["id"]
-        api("POST", f"/_emdash/api/content/gallery_items/{en_id}/publish")
-
-        print(f"{filename}: fi={fi_id} en={en_id}", file=sys.stderr)
-        results[filename] = {"fi": fi_id, "en": en_id, "order": order}
-
-    OUT_FILE.write_text(json.dumps(results, indent=2, ensure_ascii=False))
-    print(f"Wrote {OUT_FILE}", file=sys.stderr)
+    pages = api("GET", "/_emdash/api/content/pages?limit=100")["data"]["items"]
+    for locale, alt_index in (("fi", 2), ("en", 3)):
+        entry = next(p for p in pages if p["slug"] == "galleria" and p["locale"] == locale)
+        content = [
+            image_block(media[item[0]], item[alt_index], n)
+            for n, item in enumerate(sorted(ITEMS, key=lambda i: i[1]), start=1)
+        ]
+        rev = api("GET", f"/_emdash/api/content/pages/{entry['id']}")["data"].get("_rev")
+        body = {"data": {"title": entry["data"]["title"], "content": content}}
+        if rev:
+            body["_rev"] = rev
+        api("PUT", f"/_emdash/api/content/pages/{entry['id']}", body)
+        api("POST", f"/_emdash/api/content/pages/{entry['id']}/publish")
+        print(f"{locale}: {len(content)} images", file=sys.stderr)
 
 
 if __name__ == "__main__":

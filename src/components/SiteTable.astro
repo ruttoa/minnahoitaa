@@ -1,0 +1,130 @@
+---
+// Site styling for EmDash's built-in Portable Text `table` block (inserted
+// in the editor with `/table`). Same data shape and cell rendering as
+// emdash's own Table.astro -- only the presentation differs: it's registered
+// as the `table` type override in GenericPage, and dresses tables like the
+// price list (formerly PriceTable.astro): borderless, one hairline under each
+// row, first column bold, other columns right-aligned; bold text in those
+// cells is the "price" (display font, spruce), the rest is muted small print.
+import { PortableText } from "emdash/ui";
+
+interface Cell {
+	_key: string;
+	content: Array<{ _type: "span"; _key: string; text: string; marks?: string[] }>;
+	markDefs?: Array<{ _type: string; _key: string; [key: string]: unknown }>;
+	isHeader?: boolean;
+}
+
+interface Props {
+	node: {
+		rows?: Array<{ _key: string; cells: Cell[] }>;
+		hasHeaderRow?: boolean;
+	};
+}
+
+const { node } = Astro.props;
+const rows = node?.rows ?? [];
+if (!rows.length) return;
+
+// Cell text goes through the standard Portable Text pipeline so marks and
+// links (with EmDash's href sanitising) behave as everywhere else.
+const cellToBlock = (cell: Cell) => [
+	{ _type: "block" as const, _key: cell._key, children: cell.content, markDefs: cell.markDefs ?? [] },
+];
+
+const headerRow = node.hasHeaderRow ? rows[0] : null;
+const bodyRows = node.hasHeaderRow ? rows.slice(1) : rows;
+---
+
+<div class="site-table">
+	<table class="site-table__table">
+		{
+			headerRow && (
+				<thead>
+					<tr>
+						{headerRow.cells.map((cell) => (
+							<th scope="col">
+								<PortableText value={cellToBlock(cell)} />
+							</th>
+						))}
+					</tr>
+				</thead>
+			)
+		}
+		<tbody>
+			{
+				bodyRows.map((row) => (
+					<tr>
+						{row.cells.map((cell, i) => {
+							const Tag = cell.isHeader || i === 0 ? "th" : "td";
+							return (
+								<Tag scope={Tag === "th" ? "row" : undefined}>
+									<PortableText value={cellToBlock(cell)} />
+								</Tag>
+							);
+						})}
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>
+
+<style lang="scss">
+	.site-table {
+		overflow-x: auto;
+
+		&__table {
+			width: 100%;
+			border-collapse: collapse;
+
+			th,
+			td {
+				padding-block: var(--s-3);
+				border-bottom: 1px solid var(--c-border);
+				vertical-align: baseline;
+				text-align: left;
+			}
+
+			// Cell text is rendered by PortableText, i.e. by components outside
+			// this file's style scope -- hence :global for what's inside cells.
+			:global(p) {
+				margin: 0;
+				max-width: none;
+			}
+
+			// First column: the row label.
+			tbody th {
+				font-weight: 600;
+			}
+
+			thead th {
+				font-weight: 600;
+				color: var(--c-text-muted);
+				font-size: var(--fs-300);
+			}
+
+			// Other columns: right-aligned small print; bold = the price.
+			td,
+			thead th:not(:first-child) {
+				text-align: right;
+				padding-inline-start: var(--s-4);
+				color: var(--c-text-muted);
+				font-size: var(--fs-300);
+			}
+
+			// Price cells (containing bold text) don't wrap. Whole selector is
+			// global: Astro doesn't rewrite :global() nested inside :has().
+			:global(td:has(strong)) {
+				white-space: nowrap;
+			}
+
+			td :global(strong) {
+				font-family: var(--font-display);
+				font-weight: 700;
+				font-size: var(--fs-500);
+				color: var(--c-spruce-600);
+			}
+		}
+	}
+</style>

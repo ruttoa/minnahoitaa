@@ -1,0 +1,88 @@
+---
+// Site rendering for a run of consecutive Portable Text `image` blocks
+// (inserted with `/image` in the editor). GenericPage groups 2+ consecutive
+// images into one synthetic `gallery` node (same `images` shape as EmDash's
+// own gallery block) and registers this as the `type.gallery` override, so a
+// "gallery" on this site is simply several images in a row -- no separate
+// content type. Looks like the former GalleryGrid: 2 columns on mobile, 3 from
+// md, square crops, rounded corners, optional caption under the picture.
+import { Image } from "emdash/ui";
+
+interface GalleryImage {
+	_key: string;
+	asset: { _ref: string; url?: string; provider?: string };
+	alt?: string;
+	caption?: string;
+	width?: number;
+	height?: number;
+	blurhash?: string;
+	dominantColor?: string;
+}
+
+interface Props {
+	node: { images?: GalleryImage[] };
+}
+
+const images = Astro.props.node?.images ?? [];
+if (!images.length) return;
+---
+
+<ul class="site-gallery">
+	{
+		images.map((img) => (
+			<li class="site-gallery__item">
+				<figure>
+					<Image
+						image={{
+							id: img.asset._ref,
+							src: img.asset.url,
+							alt: img.alt ?? "",
+							width: img.width,
+							height: img.height,
+							provider: img.asset.provider ?? "local",
+							blurhash: img.blurhash,
+							dominantColor: img.dominantColor,
+						}}
+					/>
+					{img.caption && <figcaption>{img.caption}</figcaption>}
+				</figure>
+			</li>
+		))
+	}
+</ul>
+
+<style lang="scss">
+	.site-gallery {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--s-4);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		@include respond(md) {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		&__item {
+			figure {
+				margin: 0;
+				border-radius: var(--s-2);
+				overflow: hidden;
+				background: var(--c-frost-050);
+			}
+
+			img {
+				width: 100%;
+				aspect-ratio: 1 / 1;
+				object-fit: cover;
+			}
+
+			figcaption {
+				padding: var(--s-2);
+				font-size: var(--fs-300);
+				color: var(--c-text-muted);
+			}
+		}
+	}
+</style>

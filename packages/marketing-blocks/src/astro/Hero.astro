@@ -1,0 +1,418 @@
+---
+// Custom Portable Text block (_type: "marketing.hero"). Re-themed from the
+// emdash repo's marketing-theme original to reproduce this site's own two
+// "hero-like" sections from one block:
+//   - the homepage hero (src/components/Hero.astro): two columns, big <h1>,
+//     portrait area with the lamp glow, staggered load reveal
+//   - the closing call-to-action band (src/components/ContactBand.astro):
+//     centered, dark background band, no image
+// GenericPage passes `asH1: true` to the first block of a page when it's a
+// hero, so it becomes the page's <h1> (and the page's own title header is
+// skipped); any other hero is an <h2> -- one <h1> per page.
+// The same block also reproduces the services page's sections
+// (ServiceSection.astro) in the "wide" media shape: icon chip above the
+// heading, body paragraphs, bullet list, media area beside the text (image, or
+// the big icon glyph with the ambient lamp glow when there is no image).
+// Each block owns its container (.l-container), because GenericPage no longer
+// wraps blocks in one: full-bleed bands (`dark`) need the full page width.
+import Button from "../../../../src/components/Button.astro";
+import { Image } from "emdash/ui";
+import MarketingIcon from "./MarketingIcon.astro";
+
+interface Props {
+	node: {
+		_key?: string;
+		headline: string;
+		// Heading level chosen in the editor (`headingLevel`, h1 default) is
+		// resolved by GenericPage into `asH1` -- see below.
+		icon?: string;
+		// Body text: paragraphs separated by line breaks. (Field name kept from
+		// when this was a single "subheadline" line.)
+		subheadline?: string;
+		// Bullet list -- a repeater in the editor (one item per row).
+		list?: Array<{ text: string }>;
+		// CTAs are flattened to sibling fields because Block Kit has no
+		// object-group element (see ../index.ts).
+		primaryCtaLabel?: string;
+		primaryCtaUrl?: string;
+		secondaryCtaLabel?: string;
+		secondaryCtaUrl?: string;
+		centered?: boolean;
+		dark?: boolean;
+		// White full-bleed band (ignored when `dark` is set).
+		white?: boolean;
+		// Portrait area (4:5, lamp glow behind/around the image). Shown even
+		// without an image -- the glow alone is the current homepage design.
+		// No media picker in the plugin-block editor yet, so the image is a
+		// hand-entered URL rendered with a plain <img>, not emdash/ui's <Image>.
+		showImage?: boolean;
+		// "portrait" (default): homepage-hero look -- 4:5 area, lead-size text.
+		// "wide": service-section look -- media fills the text's height (min
+		// 16rem), body-size text.
+		mediaShape?: "portrait" | "wide";
+		mediaLeft?: boolean;
+		imageUrl?: string;
+		imageAlt?: string;
+		anchor?: string;
+		// Set by GenericPage, not by editors: this hero is the page's <h1>
+		// (first block, level h1) -- otherwise it renders as an <h2>.
+		asH1?: boolean;
+	};
+}
+
+const { node } = Astro.props;
+const { headline, icon, list, centered, dark, white, showImage, imageUrl, imageAlt, anchor, asH1 } = node;
+const shape = node.mediaShape === "wide" ? "wide" : "portrait";
+const paragraphs = (node.subheadline ?? "")
+	.split("\n")
+	.map((p) => p.trim())
+	.filter(Boolean);
+const showIcon = icon && icon !== "none" ? icon : undefined;
+const items = (list ?? []).map((i) => i.text).filter(Boolean);
+
+const Heading = asH1 ? "h1" : "h2";
+
+const primaryCta =
+	node.primaryCtaLabel && node.primaryCtaUrl
+		? { label: node.primaryCtaLabel, url: node.primaryCtaUrl }
+		: undefined;
+const secondaryCta =
+	node.secondaryCtaLabel && node.secondaryCtaUrl
+		? { label: node.secondaryCtaLabel, url: node.secondaryCtaUrl }
+		: undefined;
+
+const media = showImage && !centered;
+---
+
+<section
+	id={anchor || undefined}
+	class:list={[
+		"marketing-hero",
+		`marketing-hero--${shape}`,
+		{
+			"marketing-hero--first": asH1,
+			"marketing-hero--centered": centered,
+			"marketing-hero--dark": dark,
+			"marketing-hero--white": white && !dark,
+			"marketing-hero--media-left": node.mediaLeft,
+			"l-section l-section--dark l-section--tight": dark,
+		},
+	]}
+>
+	<div class:list={["l-container", "marketing-hero__inner", { "marketing-hero__inner--media": media }]}>
+		<div class="marketing-hero__content">
+			{
+				showIcon && (
+					<span class="marketing-hero__icon">
+						<MarketingIcon icon={showIcon} />
+					</span>
+				)
+			}
+			<Heading class="marketing-hero__headline">{headline}</Heading>
+			{
+				paragraphs.length > 0 && (
+					<div class="marketing-hero__text">
+						{paragraphs.map((p) => (
+							<p>{p}</p>
+						))}
+					</div>
+				)
+			}
+			{
+				items.length > 0 && (
+					<ul class="marketing-hero__list">
+						{items.map((text) => (
+							<li>{text}</li>
+						))}
+					</ul>
+				)
+			}
+			{
+				(primaryCta || secondaryCta) && (
+					<div class="marketing-hero__actions">
+						{primaryCta && (
+							<Button href={primaryCta.url} variant="accent">
+								{primaryCta.label}
+							</Button>
+						)}
+						{secondaryCta && (
+							<Button href={secondaryCta.url} variant="outline">
+								{secondaryCta.label}
+							</Button>
+						)}
+					</div>
+				)
+			}
+		</div>
+		{
+			media && (
+				<div class="marketing-hero__media" aria-hidden={imageUrl ? undefined : "true"}>
+					{imageUrl ? (
+						<Image image={imageUrl} alt={imageAlt ?? ""} loading={asH1 ? "eager" : "lazy"} />
+					) : (
+						showIcon && (
+							<div class="marketing-hero__glyph">
+								<MarketingIcon icon={showIcon} />
+							</div>
+						)
+					)}
+					{/* The lamp glow is the placeholder for a missing picture: it's only
+					    rendered when there's neither an image nor an icon glyph (the
+					    glyph carries its own glow). */}
+					{!imageUrl && !showIcon && <div class="marketing-hero__glow" aria-hidden="true" />}
+				</div>
+			)
+		}
+	</div>
+</section>
+
+<style lang="scss">
+	.marketing-hero {
+		scroll-margin-top: var(--s-9);
+
+		&--white {
+			background: var(--c-white);
+		}
+
+		&__inner {
+			display: grid;
+			gap: var(--s-8);
+			align-items: center;
+			padding-block: var(--s-9) var(--s-11);
+
+			@include respond(md) {
+				padding-block: var(--s-11) var(--s-12);
+			}
+		}
+
+		// --- portrait (homepage hero): content left, 4:5 area right ----------
+		&--portrait &__inner--media {
+			@include respond(md) {
+				grid-template-columns: 1.1fr 0.9fr;
+			}
+		}
+
+		// --- wide (service section): media and text 1:1, media first on mobile
+		&--wide &__inner--media {
+			@include respond(md) {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+
+		&--wide &__media {
+			order: -1;
+
+			@include respond(md) {
+				order: 1;
+			}
+		}
+
+		&--media-left &__media {
+			@include respond(md) {
+				order: -1;
+			}
+		}
+
+		&__icon {
+			display: inline-flex;
+			width: 2.5rem;
+			height: 2.5rem;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			background: var(--c-frost-050);
+			color: var(--c-spruce-600);
+			margin-bottom: var(--s-4);
+
+			svg {
+				width: 1.25rem;
+				height: 1.25rem;
+			}
+		}
+
+		// --- text --------------------------------------------------------------
+		&__text {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-4);
+			margin-top: var(--s-5);
+			font-size: var(--fs-500);
+			color: var(--c-text-muted);
+		}
+
+		&--wide &__text {
+			margin-block: var(--s-4) 0;
+			font-size: inherit;
+			color: var(--c-text);
+		}
+
+		&__list {
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-2);
+			margin-top: var(--s-4);
+
+			li {
+				padding-left: var(--s-6);
+				position: relative;
+				color: var(--c-text-muted);
+
+				&::before {
+					content: "";
+					position: absolute;
+					left: 0;
+					top: 0.6em;
+					width: 0.5rem;
+					height: 0.5rem;
+					border-radius: 50%;
+					background: var(--c-lamp-500);
+				}
+			}
+		}
+
+		&__actions {
+			display: flex;
+			gap: var(--s-4);
+			flex-wrap: wrap;
+			margin-top: var(--s-7);
+		}
+
+		&--wide &__actions {
+			margin-top: var(--s-6);
+		}
+
+		// Dark centered band: same look as the old ContactBand -- the l-section
+		// classes supply the band's padding, so the inner drops its own.
+		&--dark &__inner {
+			padding-block: 0;
+		}
+
+		&--centered &__inner {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: var(--s-5);
+			text-align: center;
+			max-width: 40rem;
+			margin-inline: auto;
+		}
+
+		&--centered &__content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: var(--s-5);
+		}
+
+		&--centered &__text,
+		&--centered &__actions {
+			margin-top: 0;
+			justify-content: center;
+		}
+
+		&--dark &__text {
+			font-size: inherit;
+			color: var(--c-sage-300);
+		}
+
+		// --- media ---------------------------------------------------------------
+		&__media {
+			position: relative;
+			border-radius: var(--s-3);
+			overflow: hidden;
+			background: var(--c-frost-050);
+
+			// The picture fills the whole area, cropped as needed.
+			img {
+				position: absolute;
+				inset: 0;
+				z-index: 1;
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+		}
+
+		&--portrait &__media {
+			aspect-ratio: 4 / 5;
+		}
+
+		// Wide: a square area (this is the size the old services page's
+		// icon-glyph area actually had), so an image has a definite box to fill.
+		&--wide &__media {
+			aspect-ratio: 1 / 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&__glow {
+			position: absolute;
+			inset: -20%;
+
+			background: radial-gradient(circle at 55% 40%, var(--c-lamp-500) 0%, transparent 60%);
+			filter: blur(3.5rem);
+			opacity: 0.55;
+		}
+
+		// The service-section fallback for a missing photo: the icon, big, with
+		// an ambient lamp glow standing in for the image (the one sanctioned
+		// use of the glow beyond the hero portrait and service-card hover).
+		&__glyph {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			min-height: 16rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--c-spruce-600);
+
+			&::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: radial-gradient(circle at 50% 45%, var(--c-lamp-500) 0%, transparent 65%);
+				filter: blur(3rem);
+				opacity: 0.35;
+			}
+
+			svg {
+				position: relative;
+				width: 5rem;
+				height: 5rem;
+				stroke-width: 1;
+			}
+		}
+
+		// Staggered load reveal -- only for the page-opening hero, like the
+		// original (one of the three sanctioned motion moments).
+		&--first {
+			@include reduced-motion {
+				.marketing-hero__headline {
+					animation: marketing-hero-reveal var(--dur-slow) var(--ease-standard) both;
+				}
+				.marketing-hero__text {
+					animation: marketing-hero-reveal var(--dur-slow) var(--ease-standard) 80ms both;
+				}
+				.marketing-hero__actions {
+					animation: marketing-hero-reveal var(--dur-slow) var(--ease-standard) 160ms both;
+				}
+				.marketing-hero__media {
+					animation: marketing-hero-reveal var(--dur-slow) var(--ease-standard) 240ms both;
+				}
+			}
+		}
+	}
+
+	@keyframes marketing-hero-reveal {
+		from {
+			opacity: 0;
+			transform: translateY(0.75rem);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
