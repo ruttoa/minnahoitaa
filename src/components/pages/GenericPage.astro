@@ -22,7 +22,8 @@ import NotFoundPage from "./NotFoundPage.astro";
 import SiteTable from "../SiteTable.astro";
 import SiteBreak from "../SiteBreak.astro";
 import SiteGallery from "../SiteGallery.astro";
-import type { Locale } from "../../i18n/ui";
+import { useTranslations, type Locale } from "../../i18n/ui";
+import { buildPageJsonLd } from "../../lib/structured-data";
 
 // Presentational only: the route files (src/pages/[...slug].astro and the en/
 // twin) do the lookup and set the 404 status -- see src/lib/pages.ts.
@@ -32,7 +33,17 @@ interface Props {
 	// site-name title and default description rather than the entry title).
 	title?: string;
 	description?: string | null;
-	entry: { id: string; data: { id: string; title: string; intro?: string; content?: unknown[] } } | null;
+	entry: {
+		id: string;
+		data: {
+			id: string;
+			title: string;
+			intro?: string;
+			content?: unknown[];
+			// Editor-set values from the admin's SEO panel (`pages` has `seo` support).
+			seo?: { title?: string | null; description?: string | null; canonical?: string | null; noIndex?: boolean };
+		};
+	} | null;
 }
 
 const { locale, entry, title, description } = Astro.props;
@@ -107,6 +118,20 @@ for (const run of runs) {
 	}
 }
 
+// SEO panel > route-supplied default > entry title / intro.
+const seo = entry?.data.seo;
+const pageTitle = seo?.title || title || entry?.data.title || "";
+const pageDescription = seo?.description || description || entry?.data.intro || null;
+const jsonLd = entry
+	? buildPageJsonLd({
+			blocks: source,
+			origin: Astro.site ?? Astro.url.origin,
+			locale,
+			slug: entry.id,
+			title: entry.data.title,
+			homeLabel: useTranslations(locale)("nav.home"),
+		})
+	: [];
 const pageContent = entry ? { collection: "pages", id: entry.data.id, slug: entry.id } : undefined;
 ---
 
@@ -114,7 +139,7 @@ const pageContent = entry ? { collection: "pages", id: entry.data.id, slug: entr
 	!entry ? (
 		<NotFoundPage locale={locale} />
 	) : heroFirst ? (
-		<BaseLayout title={title ?? entry.data.title} description={description} content={pageContent}>
+		<BaseLayout title={pageTitle} description={pageDescription} canonical={seo?.canonical} noindex={seo?.noIndex} jsonLd={jsonLd} content={pageContent}>
 			{runs.map((run) =>
 				run.kind === "block" ? (
 					<PortableText value={[run.block]} />
@@ -137,10 +162,13 @@ const pageContent = entry ? { collection: "pages", id: entry.data.id, slug: entr
 		</BaseLayout>
 	) : (
 		<PageLayout
-			title={title ?? entry.data.title}
+			title={pageTitle}
 			heading={entry.data.title}
 			intro={entry.data.intro}
-			description={description}
+			description={pageDescription}
+			canonical={seo?.canonical}
+			noindex={seo?.noIndex}
+			jsonLd={jsonLd}
 			content={pageContent}
 		>
 			{runs.map((run, i) =>
@@ -182,6 +210,23 @@ const pageContent = entry ? { collection: "pages", id: entry.data.id, slug: entr
 		// A heading that follows other content opens a new section.
 		> :global(h2:not(:first-child)) {
 			margin-top: var(--s-7);
+		}
+
+		// The global reset strips list markers; editor-written lists need them back.
+		> :global(ul),
+		> :global(ol) {
+			padding-left: var(--s-6);
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-2);
+		}
+
+		> :global(ul) {
+			list-style: disc;
+		}
+
+		> :global(ol) {
+			list-style: decimal;
 		}
 
 		// Text right after a table needs air (the table's last row hairline

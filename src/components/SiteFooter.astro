@@ -1,6 +1,7 @@
 ---
 import { getMenu, getSiteSettings } from "emdash";
 import { useTranslations, type Locale } from "../i18n/ui";
+import { getBusinessInfo } from "../lib/business-info";
 
 interface Props {
 	locale: Locale;
@@ -10,6 +11,8 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 const menu = await getMenu("footer", { locale });
 const settings = await getSiteSettings();
+const { entries } = await getBusinessInfo(Astro.locals, locale);
+const info = entries[0]?.data;
 ---
 
 <footer class="site-footer l-section l-section--dark l-section--tight">
@@ -27,6 +30,19 @@ const settings = await getSiteSettings();
 				}
 			</ul>
 		</nav>
+
+		{
+			info && (
+				<address class="site-footer__contact">
+					<span class="site-footer__name">{settings?.title}</span>
+					<a href={`tel:${info.phone_e164}`}>{info.phone_display}</a>
+					<a href={`mailto:${info.email}`}>{info.email}</a>
+					<span>
+						{t("footer.businessId")} {info.business_id}
+					</span>
+				</address>
+			)
+		}
 
 		<p class="site-footer__rights">&copy; {new Date().getFullYear()} {settings?.title} — {t("footer.rights")}</p>
 	</div>
@@ -54,6 +70,23 @@ const settings = await getSiteSettings();
 					text-decoration: underline;
 				}
 			}
+		}
+
+		&__contact {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--s-2) var(--s-5);
+			font-style: normal;
+			font-size: var(--fs-300);
+
+			a {
+				color: inherit;
+				text-underline-offset: 0.2em;
+			}
+		}
+
+		&__name {
+			font-weight: 600;
 		}
 
 		&__meta,

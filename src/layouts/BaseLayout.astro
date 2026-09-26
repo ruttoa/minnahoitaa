@@ -5,32 +5,43 @@ import "@fontsource-variable/atkinson-hyperlegible-next";
 import { getSiteSettings } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import { getRelativeLocaleUrl } from "astro:i18n";
+import { getHreflangAlternates } from "emdash";
 import SkipLink from "../components/SkipLink.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import ScrollReveal from "../components/ScrollReveal.astro";
-import { locales, isLocale, useTranslations, defaultLocale } from "../i18n/ui";
+import { isLocale, useTranslations, defaultLocale } from "../i18n/ui";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import { getBusinessInfo } from "../lib/business-info";
+import { businessId, canonicalUrl, homepageHref, ldJson, SERVICE_AREA_CITIES } from "../lib/seo";
 
 interface Props {
 	title: string;
 	description?: string | null;
 	image?: string | null;
 	canonical?: string | null;
+	/** Ask search engines not to index the page (also drops canonical + hreflang). */
+	noindex?: boolean;
+	/** Extra JSON-LD nodes for this page (breadcrumbs, FAQ, services...). */
+	jsonLd?: Record<string, unknown>[];
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
-const { title, description, image, canonical, content } = Astro.props;
+const { title, description, image, canonical: canonicalOverride, noindex = false, jsonLd = [], content } = Astro.props;
 
 const rawLocale = Astro.currentLocale;
 const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
 const t = useTranslations(locale);
 
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const settings = await getSiteSettings();
+const { siteTitle } = resolveStarterSiteIdentity(settings);
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 const pageDescription = description ?? t("meta.defaultDescription");
+
+const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
+
+const canonical = noindex ? null : (canonicalOverride ?? canonicalUrl(Astro.url.pathname, siteOrigin));
+const alternates = noindex || !content ? [] : await getHreflangAlternates(content.collection, content.id, { siteUrl: siteOrigin.origin });
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -43,29 +54,35 @@ const pageCtx = createPublicPageContext({
 	image,
 	content,
 	siteName: siteTitle,
+	seo: noindex ? { robots: "noindex, nofollow" } : undefined,
 });
 
 const currentPath = Astro.url.pathname;
-const siteOrigin = Astro.site ?? new URL(Astro.url.origin);
-
 const { entries: businessInfoEntries } = await getBusinessInfo(Astro.locals, locale);
 const info = businessInfoEntries[0]?.data;
+
+const ogImage = settings.seo?.defaultOgImage?.url;
+const facebook = settings.social?.facebook;
 
 const localBusinessLd = {
 	"@context": "https://schema.org",
 	"@type": "LocalBusiness",
+	"@id": businessId(siteOrigin),
 	name: siteTitle,
-	description: pageDescription,
-	url: siteOrigin.toString(),
+	description: t("meta.defaultDescription"),
+	url: new URL(locale === defaultLocale ? "/" : `/${locale}/`, siteOrigin).toString(),
+	...(ogImage && { image: new URL(ogImage, siteOrigin).toString() }),
 	...(info?.email && { email: info.email }),
 	...(info?.phone_e164 && { telephone: info.phone_e164 }),
+	...(info?.business_id && { taxID: info.business_id }),
 	address: {
 		"@type": "PostalAddress",
 		addressLocality: "Vantaa",
 		addressCountry: "FI",
 	},
-	...(info?.service_area && { areaServed: info.service_area }),
-	priceRange: "18–55 €",
+	areaServed: SERVICE_AREA_CITIES.map((name) => ({ "@type": "City", name })),
+	...(info?.price_range && { priceRange: info.price_range }),
+	...(facebook && { sameAs: [facebook] }),
 };
 ---
 
@@ -76,21 +93,13 @@ const localBusinessLd = {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{fullTitle}</title>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		{canonical && <link rel="canonical" href={canonical} />}
 		<script is:inline>
 			document.documentElement.classList.add("js");
 		</script>
-		{
-			locales.map((loc) => (
-				<link
-					rel="alternate"
-					hreflang={loc}
-					href={new URL(getRelativeLocaleUrl(loc, currentPath.replace(/^\/(fi|en)/, "")), Astro.site ?? Astro.url.origin)}
-				/>
-			))
-		}
+		{alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={homepageHref(a.href)} />)}
 		<EmDashHead page={pageCtx} />
-		<script type="application/ld+json" is:inline set:html={JSON.stringify(localBusinessLd)} />
+		<script type="application/ld+json" is:inline set:html={ldJson(localBusinessLd)} />
+		{jsonLd.map((node) => <script type="application/ld+json" is:inline set:html={ldJson(node)} />)}
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />

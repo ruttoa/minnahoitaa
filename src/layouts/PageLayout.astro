@@ -8,13 +8,15 @@ interface Props {
 	description?: string | null;
 	image?: string | null;
 	canonical?: string | null;
+	noindex?: boolean;
+	jsonLd?: Record<string, unknown>[];
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
-const { title, heading, intro, description, image, canonical, content } = Astro.props;
+const { title, heading, intro, description, image, canonical, noindex, jsonLd, content } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} canonical={canonical} content={content}>
+<BaseLayout title={title} description={description} image={image} canonical={canonical} noindex={noindex} jsonLd={jsonLd} content={content}>
 	<div class="l-container page-header">
 		<h1>{heading}</h1>
 		{intro && <p class="page-header__intro">{intro}</p>}

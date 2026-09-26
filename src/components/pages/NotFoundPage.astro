@@ -18,7 +18,7 @@ const { locale } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<BaseLayout title={t("404.title")}>
+<BaseLayout title={t("404.title")} noindex>
 	<div class="l-container not-found">
 		<h1>{t("404.title")}</h1>
 		<p>{t("404.body")}</p>
