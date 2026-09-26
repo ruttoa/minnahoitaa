@@ -10,7 +10,11 @@
 # a fresh reseed if you want the media library repopulated; already-uploaded
 # files are deduplicated server-side by content hash, so re-running is safe.
 #
-# Usage: ./scripts/upload-media.sh [base-url]
+# Usage:
+#   ./scripts/upload-media.sh                          # local dev server
+#   EMDASH_TOKEN=ec_pat_... ./scripts/upload-media.sh https://example.com
+# Local (http://localhost:4321) signs in via dev-bypass. Any other base URL needs
+# an admin API token in EMDASH_TOKEN (Settings -> API tokens, scope media:write).
 
 set -euo pipefail
 
@@ -20,12 +24,14 @@ MAP_FILE="$(dirname "$0")/../content-source/media-upload-map.json"
 COOKIE_JAR="$(mktemp)"
 trap 'rm -f "$COOKIE_JAR"' EXIT
 
+AUTH=()
 if [[ "$BASE_URL" == "http://localhost:4321" ]]; then
 	curl -s -c "$COOKIE_JAR" -o /dev/null \
 		"$BASE_URL/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin"
+	AUTH=(-b "$COOKIE_JAR")
 else
-	echo "Non-local base URL: supply a valid admin session cookie yourself" >&2
-	exit 1
+	: "${EMDASH_TOKEN:?Set EMDASH_TOKEN (admin API token) to run against $BASE_URL}"
+	AUTH=(-H "Authorization: Bearer $EMDASH_TOKEN")
 fi
 
 echo "{" > "$MAP_FILE"
@@ -33,7 +39,7 @@ first=1
 for f in "$IMAGES_DIR"/*.jpg "$IMAGES_DIR"/*.jpeg; do
 	[[ -e "$f" ]] || continue
 	name="$(basename "$f")"
-	response="$(curl -s -b "$COOKIE_JAR" -X POST \
+	response="$(curl -s "${AUTH[@]}" -X POST \
 		-H "X-EmDash-Request: 1" \
 		-H "Origin: $BASE_URL" \
 		-F "file=@${f}" \

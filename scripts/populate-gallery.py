@@ -12,10 +12,18 @@ Idempotent: replaces the `galleria` pages' content each time (so re-running
 discards manual edits to that content). Requires the `galleria` pages (fi + en)
 to exist (they're in the seed) and a running dev server.
 
-Usage: python3 scripts/populate-gallery.py [base-url]
+Usage:
+    python3 scripts/populate-gallery.py                       # local dev server
+    EMDASH_TOKEN=ec_pat_... python3 scripts/populate-gallery.py https://example.com
+
+Local (http://localhost:4321) signs in via dev-bypass; any other base URL needs an
+admin API token in EMDASH_TOKEN (Settings -> API tokens, scopes content:write and
+media:read). Run scripts/upload-media.sh against the same site first: it writes
+the media-upload-map.json this script reads.
 """
 
 import json
+import os
 import sys
 import urllib.request
 import http.cookiejar
@@ -129,21 +137,26 @@ def image_block(rec, alt, n):
 
 
 def main():
-    if BASE_URL != "http://localhost:4321":
-        print("Non-local base URL: supply a valid admin session cookie yourself", file=sys.stderr)
+    local = BASE_URL == "http://localhost:4321"
+    token = os.environ.get("EMDASH_TOKEN")
+    if not local and not token:
+        print(f"Set EMDASH_TOKEN (admin API token) to run against {BASE_URL}", file=sys.stderr)
         sys.exit(1)
 
     media = json.loads(MAP_FILE.read_text())
 
     jar = http.cookiejar.CookieJar()
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-    opener.open(f"{BASE_URL}/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin").read()
+    if local:
+        opener.open(f"{BASE_URL}/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin").read()
 
     def api(method, path, body=None):
         data = json.dumps(body).encode("utf-8") if body is not None else None
         req = urllib.request.Request(f"{BASE_URL}{path}", data=data, method=method)
         req.add_header("X-EmDash-Request", "1")
         req.add_header("Origin", BASE_URL)
+        if token:
+            req.add_header("Authorization", f"Bearer {token}")
         if data is not None:
             req.add_header("Content-Type", "application/json")
         with opener.open(req) as resp:

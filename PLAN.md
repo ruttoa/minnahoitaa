@@ -58,7 +58,7 @@ The **factual** content below is what must survive the rebuild. Treat it as a da
 
 ### Contact details
 
-Email `minna.petsitter@gmail.com` · phone — **⚠️ the source site prints two different numbers (`045 783 14323` and `+358 45 78314323`); flag this to the client and use one canonical E.164 value** · WhatsApp available · Y-tunnus 3481889-8 · Facebook: `https://www.facebook.com/people/Minna-hoitaa/61583514297558/`.
+Email `minna.petsitter@gmail.com` · phone — confirmed by the client: shown as `045 783 14323`, `tel:` href `+3584578314323` · WhatsApp available · Y-tunnus 3481889-8 · Facebook: `https://www.facebook.com/people/Minna-hoitaa/61583514297558/`.
 
 ### Testimonials
 

@@ -65,6 +65,17 @@ to recreate the contact form. **The contact form is not part of `seed/seed.json`
 
 The gallery is the same story: if you have `content-source/images/` (gitignored, not on a fresh checkout), `./scripts/upload-media.sh` re-uploads the archived photos and `./scripts/populate-gallery.py` builds the gallery (one `image` block per photo) onto the `galleria` page — see `docs/media-credits.md` for which photos are included/excluded and why. `populate-gallery.py` replaces that page's content each time it runs, so it discards manual edits to the gallery.
 
+**Against a deployed site**: the three scripts also work remotely. Create an API token in the admin (Settings → API tokens; the forms plugin's routes need the `admin` scope, the others `media:write`/`content:write`), then pass the base URL and the token:
+
+```bash
+export EMDASH_TOKEN=ec_pat_...
+./scripts/upload-media.sh https://example.com
+python3 scripts/populate-gallery.py https://example.com
+./scripts/setup-contact-form.sh https://example.com
+```
+
+Run `upload-media.sh` before `populate-gallery.py` (it writes the media-id map the latter reads). Only `http://localhost:4321` uses the dev-bypass login; every other URL requires `EMDASH_TOKEN`.
+
 ```bash
 npx emdash types   # regenerate emdash-env.d.ts after a schema change
 ```
@@ -134,8 +145,6 @@ Checked against [PLAN.md §10](PLAN.md)'s Definition of Done, against the dev se
 ## Known open items before launch
 
 - **Privacy statement** (`/tietosuoja/`) is a draft — flagged on the page itself, needs legal review before going live.
-- **Contact form email delivery** hasn't been confirmed end-to-end — submissions confirmed landing in the admin, but whether the notification email actually reaches `minna.petsitter@gmail.com` needs a live check (see [AGENTS.md](AGENTS.md#contact-form-emdash-cmsplugin-forms)).
-- **Canonical phone number**: the old site printed two formats; `src/lib/format.ts`'s `PHONE_E164` is a best guess pending client confirmation.
 - **Gallery photos**: 26 of the 31 archived photos are `image` blocks on the `galleria` page (see `scripts/populate-gallery.py` and `docs/media-credits.md` for the exclusions and two flagged photos worth a second look before launch).
 - **English content**: real translations throughout (not machine-translated placeholders), but nobody's proofread them against the client's actual voice — a native-speaker pass before launch would be worthwhile.
 - **Screen-reader pass**: not performed (no VoiceOver/NVDA available in this environment) — do this before launch, especially on the contact form and mobile nav.
