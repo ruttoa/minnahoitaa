@@ -18,6 +18,7 @@
 // wraps blocks in one: full-bleed bands (`dark`, `white`) need the full page
 // width.
 import Button from "../../../../src/components/Button.astro";
+import { getDb } from "emdash/runtime";
 import { Image } from "emdash/ui";
 import MarketingIcon from "./MarketingIcon.astro";
 import { resolveHref } from "./links";
@@ -85,6 +86,34 @@ const primaryCta = cta(node.primaryCtaLabel, node.primaryCtaUrl);
 const secondaryCta = cta(node.secondaryCtaLabel, node.secondaryCtaUrl);
 
 const media = showImage && !centered;
+
+// Maximum size of the picture (a bounding box, not the media box's shape).
+// Without width + height `Image` skips optimisation and emits a plain <img>
+// of the full-size original; with them it goes through Astro's image service
+// (srcset, resized and re-encoded). The `media_picker` stores only the file's
+// URL (/_emdash/api/media/file/<storage key>), so the real dimensions are looked
+// up from the media library by that storage key and scaled down into the box
+// with the original aspect ratio kept: no padding bars, no upscaling. CSS
+// object-fit: cover crops it to the media box. If the lookup fails, the box's
+// own size is the fallback.
+const maxBox = shape === "wide" ? { width: 1000, height: 1000 } : { width: 1000, height: 1250 };
+let imageSize = maxBox;
+const storageKey = imageUrl?.match(/\/media\/file\/([^/?#]+)/)?.[1];
+if (storageKey) {
+	try {
+		const item = await (await getDb())
+			.selectFrom("media")
+			.select(["width", "height"])
+			.where("storage_key", "=", decodeURIComponent(storageKey))
+			.executeTakeFirst();
+		if (item?.width && item?.height) {
+			const k = Math.min(1, maxBox.width / item.width, maxBox.height / item.height);
+			imageSize = { width: Math.round(item.width * k), height: Math.round(item.height * k) };
+		}
+	} catch {
+		// keep the fallback
+	}
+}
 ---
 
 <section
@@ -151,7 +180,7 @@ const media = showImage && !centered;
 			media && (
 				<div class="marketing-hero__media" aria-hidden={imageUrl ? undefined : "true"}>
 					{imageUrl ? (
-						<Image image={imageUrl} alt={imageAlt ?? ""} loading={asH1 ? "eager" : "lazy"} />
+						<Image image={imageUrl} alt={imageAlt ?? ""} priority={asH1} sizes="(min-width: 64rem) 36rem, 100vw" {...imageSize} />
 					) : (
 						showIcon && (
 							<div class="marketing-hero__glyph">
